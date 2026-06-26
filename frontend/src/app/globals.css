@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gut: clamp(20px, 5vw, 40px);
+
+  /* ---- Light theme (default) — RGB triplets for alpha support ---- */
+  --bg: 255 255 255;
+  --surface: 247 248 250;
+  --panel: 255 255 255;
+  --ink: 22 36 59;
+  --heading: 15 35 64;
+  --muted: 91 106 130;
+  --accent: 200 16 46;
+  --accent-strong: 158 12 36;
+  --hairline: #e6e9ef;
+}
+
+.dark {
+  /* ---- Dark theme (soft premium navy, not black) ---- */
+  --bg: 11 18 32;
+  --surface: 17 26 43;
+  --panel: 17 26 43;
+  --ink: 237 239 243;
+  --heading: 243 245 249;
+  --muted: 138 151 173;
+  --accent: 224 23 58;
+  --accent-strong: 255 59 78;
+  --hairline: rgba(255, 255, 255, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: rgb(var(--accent));
+  color: #fff;
+}
+:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-shell px-[var(--gut)];
+  }
+  .section {
+    @apply py-[clamp(68px,8.5vw,128px)];
+  }
+
+  /* Clean editorial headings — Space Grotesk, sentence-case, not shouty */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), sans-serif;
+    color: rgb(var(--heading));
+    @apply font-bold leading-[1.06];
+    letter-spacing: -0.015em;
+  }
+
+  /* Kicker label with a small red tick */
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-muted;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply inline-block h-[2px] w-5 shrink-0 bg-accent;
+  }
+  .eyebrow-dark {
+    @apply text-muted;
+  }
+
+  /* Buttons — one refined CTA style, tight rounded, soft */
+  .btn {
+    @apply inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-transparent px-6 py-3 text-[0.92rem] font-semibold tracking-[0.01em] transition-all duration-200;
+  }
+  .btn-primary {
+    @apply bg-accent text-white shadow-soft hover:-translate-y-0.5 hover:bg-accent-strong;
+  }
+  .btn-ghost {
+    @apply border-hairline bg-transparent text-ink hover:border-ink/25 hover:bg-ink/[0.03];
+  }
+  .btn-outline {
+    @apply border-hairline bg-transparent text-ink hover:border-accent hover:text-accent;
+  }
+
+  /* Clean form fields */
+  .field-input {
+    @apply w-full rounded-[10px] border border-hairline bg-panel px-4 py-3 text-[1rem] text-ink outline-none transition placeholder:text-muted/70 focus:border-accent focus:shadow-[0_0_0_3px_rgba(200,16,46,.1)];
+  }
+  .field-label {
+    @apply mb-2 block text-[0.82rem] font-semibold text-muted;
+  }
+}
+
+/* Per-route entrance (replaces Framer page transition) */
+@keyframes routeFade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.route-fade {
+  animation: routeFade 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Mobile menu enter (replaces Framer AnimatePresence) */
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.menu-in {
+  animation: menuIn 0.25s ease-out both;
+}
+
+/* Ken-Burns drift for the hero showcase active slide */
+@keyframes kenburns {
+  from {
+    transform: scale(1.04) translate(0, 0);
+  }
+  to {
+    transform: scale(1.12) translate(-1.5%, -1.5%);
+  }
+}
+.kb-pan {
+  transform: scale(1.04);
+}
+.kb-active {
+  animation: kenburns 6s ease-out forwards;
+}
+
+/* Lenis smooth-scroll (recommended baseline) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  body {
+    transition: none;
+  }
+  .kb-pan,
+  .kb-active {
+    animation: none;
+    transform: none;
+  }
+  .route-fade,
+  .menu-in {
+    animation: none;
+  }
+}

@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+
+# Local JSON store (created at runtime when MONGODB_URI is not set)
+data/
