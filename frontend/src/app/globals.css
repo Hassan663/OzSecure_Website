@@ -153,6 +153,58 @@ body {
   animation: kenburns 6s ease-out forwards;
 }
 
+/* ── Chat widget ─────────────────────────────────────────────────────────── */
+@keyframes chatBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes chatPulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  70% { transform: scale(1.7); opacity: 0; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+@keyframes chatPop {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes chatDot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes chatWobble {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-9deg); }
+  75% { transform: rotate(9deg); }
+}
+.chat-launcher {
+  animation: chatBob 3.2s ease-in-out infinite;
+}
+.chat-ring {
+  animation: chatPulse 2.6s ease-out infinite;
+}
+.chat-launcher:hover .chat-icon {
+  animation: chatWobble 0.45s ease-in-out;
+}
+.chat-pop {
+  animation: chatPop 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.chat-dot {
+  animation: chatDot 1.2s ease-in-out infinite;
+}
+.chat-dot:nth-child(2) { animation-delay: 0.15s; }
+.chat-dot:nth-child(3) { animation-delay: 0.3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-launcher,
+  .chat-ring,
+  .chat-dot,
+  .chat-pop,
+  .chat-launcher:hover .chat-icon {
+    animation: none;
+  }
+  .chat-ring { display: none; }
+}
+
 /* Lenis smooth-scroll (recommended baseline) */
 html.lenis,
 html.lenis body {

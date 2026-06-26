@@ -7,14 +7,22 @@ const router = Router();
 
 const validators = [
   body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 120 }),
-  body('email').trim().isEmail().withMessage('A valid email is required').normalizeEmail(),
+  // Email validated when present; at least one contact method is required below
+  // (the chatbot may collect a phone instead of an email).
+  body('email').optional({ checkFalsy: true }).trim().isEmail().withMessage('A valid email is required').normalizeEmail(),
   body('company').optional().trim().isLength({ max: 160 }),
   body('phone').optional().trim().isLength({ max: 40 }),
   body('service').optional().trim().isLength({ max: 80 }),
   body('location').optional().trim().isLength({ max: 120 }),
   body('message').optional().trim().isLength({ max: 4000 }),
+  body('source').optional().trim().isIn(['website', 'chatbot']).withMessage('Invalid source'),
   // honeypot — bots fill hidden fields; humans never do
   body('website').optional().isEmpty().withMessage('Spam detected'),
+  // require an email OR a phone
+  body().custom((_v, { req }) => {
+    if (!req.body.email && !req.body.phone) throw new Error('Please provide an email or phone number');
+    return true;
+  }),
 ];
 
 router.post('/', validators, async (req, res) => {

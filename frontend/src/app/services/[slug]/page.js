@@ -44,7 +44,7 @@ export default function ServicePage({ params }) {
 
       {/* OVERVIEW */}
       <section className="section">
-        <div className="shell grid items-center gap-[60px] lg:grid-cols-2">
+        <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-[60px]">
           <AnimateIn variant="left">
             <span className="eyebrow">Overview</span>
             <h2 className="mt-4 text-[clamp(2rem,4.4vw,3rem)]">What we deliver</h2>

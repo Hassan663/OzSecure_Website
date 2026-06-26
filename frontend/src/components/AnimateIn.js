@@ -72,27 +72,42 @@ export default function AnimateIn({
 
       const mm = gsap.matchMedia();
 
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        const targets = stagger ? Array.from(el.children) : el;
-        const from = FROM[variant] || FROM.fade;
-        const to = TO[variant] || TO.fade;
+      // `desktop` gates horizontal slides — on mobile they're swapped for a
+      // gentle rise so a full-width element never translates past the viewport
+      // (which would otherwise cause horizontal overflow).
+      mm.add(
+        {
+          motion: '(prefers-reduced-motion: no-preference)',
+          desktop: '(min-width: 768px)',
+        },
+        (ctx) => {
+          if (!ctx.conditions.motion) return; // reduced motion → stay visible
+          const targets = stagger ? Array.from(el.children) : el;
+          let from = { ...(FROM[variant] || FROM.fade) };
+          let to = { ...(TO[variant] || TO.fade) };
 
-        gsap.set(targets, from);
-        gsap.to(targets, {
-          ...to,
-          duration,
-          ease,
-          delay,
-          stagger: stagger || 0,
-          scrollTrigger: {
-            trigger: el,
-            start,
-            toggleActions: once ? 'play none none none' : 'play none none reverse',
-          },
-        });
-      });
+          if (!ctx.conditions.desktop && from.x !== undefined) {
+            delete from.x;
+            delete to.x;
+            from = { ...from, y: 22 };
+            to = { ...to, y: 0 };
+          }
 
-      // Reduced motion: nothing to do — content stays in its natural state.
+          gsap.set(targets, from);
+          gsap.to(targets, {
+            ...to,
+            duration,
+            ease,
+            delay,
+            stagger: stagger || 0,
+            scrollTrigger: {
+              trigger: el,
+              start,
+              toggleActions: once ? 'play none none none' : 'play none none reverse',
+            },
+          });
+        }
+      );
     },
     { scope: ref }
   );

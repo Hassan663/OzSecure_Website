@@ -96,8 +96,8 @@ export default function HeroShowcase() {
         <span className="text-[0.78rem] font-semibold tracking-wide text-white">{SLIDES[active].caption}</span>
       </div>
 
-      {/* Dot indicators */}
-      <div className="absolute bottom-4 left-4 flex items-center gap-2">
+      {/* Dot indicators — small visual dot inside a 44px-tall tap target */}
+      <div className="absolute bottom-1 left-2.5 flex items-center">
         {SLIDES.map((s, i) => (
           <button
             key={s.src}
@@ -105,10 +105,14 @@ export default function HeroShowcase() {
             onClick={() => setActive(i)}
             aria-label={`Show ${s.caption}`}
             aria-current={i === active}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              i === active ? 'w-6 bg-accent' : 'w-2 bg-white/45 hover:bg-white/70'
-            }`}
-          />
+            className="flex h-11 items-center px-1.5"
+          >
+            <span
+              className={`block h-2 rounded-full transition-all duration-300 ${
+                i === active ? 'w-6 bg-accent' : 'w-2 bg-white/45 hover:bg-white/70'
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>

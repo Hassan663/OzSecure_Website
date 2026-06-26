@@ -44,7 +44,7 @@ export default function Home() {
 
       {/* WHY */}
       <section className="section">
-        <div className="shell grid items-center gap-[60px] lg:grid-cols-2">
+        <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-[60px]">
           <Reveal>
             <span className="eyebrow">Why OzSecure</span>
             <h2 className="mt-4 text-[clamp(2rem,4.4vw,3rem)]">Accountable from the first call to the final report.</h2>
@@ -67,7 +67,7 @@ export default function Home() {
             </div>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="relative overflow-hidden rounded-[14px] border border-hairline bg-surface p-9 sm:p-11">
+            <div className="relative overflow-hidden rounded-[14px] border border-hairline bg-surface p-7 sm:p-11">
               <Constellation className="pointer-events-none absolute -right-4 -top-4 h-44 w-auto text-muted/25" />
               <div className="relative">
                 <span className="eyebrow">One team</span>

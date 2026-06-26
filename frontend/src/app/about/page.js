@@ -28,7 +28,7 @@ const compliance = [
 
 function InfoPanel({ title, body, image, alt }) {
   return (
-    <div className="relative flex min-h-[420px] items-end overflow-hidden rounded-[14px] border border-hairline bg-gradient-to-br from-navy to-navy-deep p-9 sm:p-11">
+    <div className="relative flex min-h-[420px] items-end overflow-hidden rounded-[14px] border border-hairline bg-gradient-to-br from-navy to-navy-deep p-7 sm:p-11">
       <Image src={image} alt={alt} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/45 to-navy/10" />
       <div className="relative">
@@ -50,7 +50,7 @@ export default function AboutPage() {
 
       {/* STORY */}
       <section className="section">
-        <div className="shell grid items-center gap-[60px] lg:grid-cols-2">
+        <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-[60px]">
           <Reveal>
             <span className="eyebrow">Who we are</span>
             <h2 className="mt-4 text-[clamp(2rem,4.4vw,3rem)]">A single operator for the work that keeps sites running.</h2>
@@ -97,7 +97,7 @@ export default function AboutPage() {
 
       {/* COMPLIANCE */}
       <section id="compliance" className="section scroll-mt-24">
-        <div className="shell grid items-center gap-[60px] lg:grid-cols-2">
+        <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-[60px]">
           <div>
             <AnimateIn variant="left">
               <span className="eyebrow">Compliance &amp; cover</span>

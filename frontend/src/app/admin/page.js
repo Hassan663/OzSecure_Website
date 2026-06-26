@@ -30,6 +30,19 @@ function StatusBadge({ status }) {
   );
 }
 
+function SourceBadge({ source }) {
+  const isBot = source === 'chatbot';
+  return (
+    <span
+      className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[0.66rem] font-semibold uppercase tracking-wide ${
+        isBot ? 'bg-accent/12 text-accent' : 'bg-muted/12 text-muted'
+      }`}
+    >
+      {isBot ? 'Chatbot' : 'Website'}
+    </span>
+  );
+}
+
 function fmtDate(iso) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '—';
@@ -140,11 +153,11 @@ export default function AdminDashboard() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={load} className="flex h-10 w-10 items-center justify-center rounded-[10px] border border-hairline text-muted hover:text-ink" aria-label="Refresh">
+          <button onClick={load} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-hairline text-muted hover:text-ink" aria-label="Refresh">
             <RefreshCw size={17} className={loading ? 'animate-spin' : ''} />
           </button>
           <ThemeToggle />
-          <button onClick={logout} className="flex items-center gap-2 rounded-[10px] border border-hairline px-3.5 py-2 text-[0.85rem] font-medium text-muted hover:text-ink">
+          <button onClick={logout} className="flex items-center gap-2 rounded-[10px] border border-hairline px-3.5 py-2.5 text-[0.85rem] font-medium text-muted hover:text-ink">
             <LogOut size={16} /> <span className="hidden sm:inline">Log out</span>
           </button>
         </div>
@@ -221,7 +234,12 @@ export default function AdminDashboard() {
                     className="cursor-pointer border-b border-hairline last:border-0 transition-colors hover:bg-surface"
                   >
                     <td className="whitespace-nowrap px-4 py-3 text-muted">{fmtDate(q.createdAt)}</td>
-                    <td className="px-4 py-3 font-medium text-ink">{q.name || '—'}</td>
+                    <td className="px-4 py-3 font-medium text-ink">
+                      <span className="flex items-center gap-2">
+                        {q.name || '—'}
+                        <SourceBadge source={q.source} />
+                      </span>
+                    </td>
                     <td className="px-4 py-3 text-muted">{q.company || '—'}</td>
                     <td className="px-4 py-3 text-muted">{q.service || '—'}</td>
                     <td className="px-4 py-3 text-muted">{q.email || q.phone || '—'}</td>
@@ -250,7 +268,7 @@ export default function AdminDashboard() {
             <button
               disabled={page <= 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="flex h-9 w-9 items-center justify-center rounded-[8px] border border-hairline disabled:opacity-40"
+              className="flex h-10 w-10 items-center justify-center rounded-[8px] border border-hairline disabled:opacity-40"
               aria-label="Previous page"
             >
               <ChevronLeft size={16} />
@@ -261,7 +279,7 @@ export default function AdminDashboard() {
             <button
               disabled={page >= pages}
               onClick={() => setPage((p) => Math.min(pages, p + 1))}
-              className="flex h-9 w-9 items-center justify-center rounded-[8px] border border-hairline disabled:opacity-40"
+              className="flex h-10 w-10 items-center justify-center rounded-[8px] border border-hairline disabled:opacity-40"
               aria-label="Next page"
             >
               <ChevronRight size={16} />
@@ -292,11 +310,12 @@ function Drawer({ query, onClose, onStatus, onDelete }) {
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
       <aside className="absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col border-l border-hairline bg-panel shadow-2xl">
         <div className="flex items-center justify-between border-b border-hairline px-5 py-4">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-[1.2rem]">{query.name || 'Submission'}</h2>
             <StatusBadge status={query.status} />
+            <SourceBadge source={query.source} />
           </div>
-          <button onClick={onClose} className="flex h-9 w-9 items-center justify-center rounded-[8px] text-muted hover:text-ink" aria-label="Close">
+          <button onClick={onClose} className="flex h-11 w-11 items-center justify-center rounded-[8px] text-muted hover:text-ink" aria-label="Close">
             <X size={18} />
           </button>
         </div>

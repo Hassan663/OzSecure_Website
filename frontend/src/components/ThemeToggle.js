@@ -34,7 +34,7 @@ export default function ThemeToggle() {
       onClick={toggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="flex h-10 w-10 items-center justify-center rounded-[10px] border border-hairline text-muted transition-colors hover:border-ink/25 hover:text-ink"
+      className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-hairline text-muted transition-colors hover:border-ink/25 hover:text-ink"
     >
       {/* Fixed-size box; icon swaps in after mount to avoid hydration mismatch */}
       {!mounted ? (

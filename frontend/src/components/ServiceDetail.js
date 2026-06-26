@@ -57,7 +57,7 @@ export default function ServiceDetail({ service, index }) {
   return (
     <div
       id={service.id}
-      className="grid scroll-mt-24 items-center gap-[54px] border-b border-hairline py-[clamp(40px,6vw,70px)] last:border-b-0 lg:grid-cols-2"
+      className="grid scroll-mt-24 items-center gap-9 border-b border-hairline py-[clamp(40px,6vw,70px)] last:border-b-0 lg:grid-cols-2 lg:gap-[54px]"
     >
       {Text}
       {Visual}

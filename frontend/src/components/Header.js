@@ -14,7 +14,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-hairline bg-bg/85 backdrop-blur-md">
-      <nav className="shell flex h-[84px] items-center justify-between gap-6">
+      <nav className="shell flex h-[68px] items-center justify-between gap-4 sm:h-[84px] sm:gap-6">
         <Link href="/" className="flex items-center" aria-label="OzSecure Services home">
           <Logo className="h-11 w-auto sm:h-16" priority />
         </Link>
@@ -53,7 +53,7 @@ export default function Header() {
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-[10px] border border-hairline text-ink"
+            className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-hairline text-ink"
             aria-label="Toggle menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}

@@ -20,10 +20,10 @@ export default function ContactPage() {
         intro="Send through the details and we'll come back with a quote — usually within one business day. Need crews urgently? Call the operations desk any time, day or night."
       />
       <section className="section">
-        <div className="shell grid items-start gap-[50px] lg:grid-cols-[0.85fr_1.15fr]">
+        <div className="shell grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-[50px]">
           {/* INFO */}
           <AnimateIn variant="left">
-            <div className="relative overflow-hidden rounded-[14px] border border-hairline bg-surface p-[38px]">
+            <div className="relative overflow-hidden rounded-[14px] border border-hairline bg-surface p-6 sm:p-[38px]">
               <Constellation className="pointer-events-none absolute -right-4 -top-4 h-40 w-auto text-muted/20" />
               <h3 className="relative text-[1.5rem]">Operations Desk</h3>
 
@@ -61,9 +61,9 @@ function InfoRow({ icon: Ico, label, children }) {
       <div className="flex h-[44px] w-[44px] shrink-0 items-center justify-center rounded-[10px] border border-hairline bg-panel">
         <Ico size={20} className="text-accent" />
       </div>
-      <div>
+      <div className="min-w-0">
         <div className="text-[0.76rem] font-semibold uppercase tracking-[0.08em] text-muted">{label}</div>
-        <div className="text-[1.05rem] font-medium text-ink">{children}</div>
+        <div className="break-words text-[1.05rem] font-medium text-ink">{children}</div>
       </div>
     </div>
   );

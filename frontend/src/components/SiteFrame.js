@@ -2,10 +2,11 @@
 import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
+import ChatWidget from './chat/ChatWidget';
 
 /**
- * Renders the public chrome (Header/Footer) for marketing pages, but NOT on
- * /admin routes — the admin panel has its own minimal chrome.
+ * Renders the public chrome (Header/Footer + chat widget) for marketing pages,
+ * but NOT on /admin routes — the admin panel has its own minimal chrome.
  */
 export default function SiteFrame({ children }) {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ export default function SiteFrame({ children }) {
       <Header />
       <main>{children}</main>
       <Footer />
+      <ChatWidget />
     </>
   );
 }

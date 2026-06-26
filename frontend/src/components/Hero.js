@@ -61,10 +61,10 @@ export default function Hero() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden border-b border-hairline">
-      <div className="shell grid items-center gap-12 py-[clamp(52px,7vw,96px)] lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="shell grid items-center gap-10 py-[clamp(52px,7vw,96px)] lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
         <div>
           <span className="hero-kicker eyebrow">Security · Traffic · Cleaning · Labour</span>
-          <h1 className="mt-5 text-[clamp(2.6rem,6vw,4.6rem)]">
+          <h1 className="mt-5 text-[clamp(2.3rem,6vw,4.6rem)]">
             {HEAD.map((w, i) => (
               <Fragment key={i}>
                 <span className="hero-word inline-block will-change-transform">
@@ -78,11 +78,11 @@ export default function Hero() {
             One accredited provider for security, traffic control, commercial cleaning and labour hire — staffed,
             supervised and operating around the clock across {site.coverage}.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link ref={ctaRef} href="/contact" className="hero-cta btn btn-primary">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link ref={ctaRef} href="/contact" className="hero-cta btn btn-primary w-full justify-center sm:w-auto">
               Request a Quote <ArrowRight size={16} />
             </Link>
-            <Link href="/services" className="hero-cta btn btn-ghost">
+            <Link href="/services" className="hero-cta btn btn-ghost w-full justify-center sm:w-auto">
               Our Services
             </Link>
           </div>
