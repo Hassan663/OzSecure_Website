@@ -3,11 +3,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Phone, Menu, X, ArrowRight } from 'lucide-react';
-import { nav, site } from '@/data/site';
+import { nav } from '@/data/site';
+import { useSiteSettings } from './SettingsProvider';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
+  const site = useSiteSettings();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (href) => (href === '/' ? pathname === '/' : pathname.startsWith(href));

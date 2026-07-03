@@ -17,7 +17,7 @@ export default function Constellation({ className = '' }) {
       <line x1={PTS[0].x} y1={PTS[0].y} x2={PTS[1].x} y2={PTS[1].y} stroke="currentColor" strokeWidth="1" />
       <line x1={PTS[2].x} y1={PTS[2].y} x2={PTS[3].x} y2={PTS[3].y} stroke="currentColor" strokeWidth="1" />
       {PTS.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r={p.r} fill={p.accent ? '#C8102E' : 'currentColor'} />
+        <circle key={i} cx={p.x} cy={p.y} r={p.r} fill={p.accent ? 'rgb(var(--accent))' : 'currentColor'} />
       ))}
     </svg>
   );

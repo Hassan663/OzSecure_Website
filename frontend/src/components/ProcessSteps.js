@@ -3,13 +3,14 @@ import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { steps } from '@/data/services';
+import { steps as defaultSteps } from '@/data/services';
 
 /**
  * Clean numbered process — large muted index, title, body, thin accent rule
  * that draws in. Reveals in sequence. Reduced motion → static, fully visible.
+ * Steps come from dynamic homepage content, falling back to the bundled list.
  */
-export default function ProcessSteps() {
+export default function ProcessSteps({ steps = defaultSteps }) {
   const ref = useRef(null);
 
   useGSAP(

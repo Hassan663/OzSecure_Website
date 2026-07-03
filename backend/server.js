@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import quoteRouter from './src/routes/quote.js';
 import adminRouter from './src/routes/admin.js';
+import contentRouter from './src/routes/content.js';
+import mediaRouter from './src/routes/media.js';
 import { initStore } from './src/store/index.js';
 
 const app = express();
@@ -42,6 +44,8 @@ const quoteLimiter = rateLimit({
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'ozsecure-api' }));
 app.use('/api/quote', quoteLimiter, quoteRouter);
+app.use('/api/content', contentRouter);
+app.use('/api/media', mediaRouter);
 app.use('/api/admin', adminRouter);
 
 app.use((_req, res) => res.status(404).json({ ok: false, message: 'Not found' }));

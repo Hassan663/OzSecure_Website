@@ -1,6 +1,7 @@
 export const site = {
   name: 'OzSecure Services',
-  tagline: 'Security / TC / Cleaning / Labour',
+  tagline: 'Trusted Protection. Powerful Presence.',
+  serviceLine: 'Security / TC / Cleaning / Labour',
   entity: 'A project of KN Management Services Pty Ltd',
   mln: '000109419',
   abn: '64 665 739 971',
@@ -13,11 +14,13 @@ export const site = {
     line2: 'Parramatta, NSW 2144',
   },
   coverage: 'Sydney & Greater NSW',
+  hours: '24/7 Operations',
 };
 
 export const nav = [
   { label: 'Home', href: '/' },
+  { label: 'About Us', href: '/about' },
   { label: 'Services', href: '/services' },
-  { label: 'About', href: '/about' },
+  { label: 'Careers', href: '/careers' },
   { label: 'Contact', href: '/contact' },
 ];

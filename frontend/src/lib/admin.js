@@ -1,5 +1,5 @@
 // Admin API client — talks to the Express backend at NEXT_PUBLIC_API_URL.
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 const TOKEN_KEY = 'oz_admin_token';
 
 export function getToken() {

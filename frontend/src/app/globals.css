@@ -6,27 +6,28 @@
   --gut: clamp(20px, 5vw, 40px);
 
   /* ---- Light theme (default) — RGB triplets for alpha support ---- */
-  --bg: 255 255 255;
-  --surface: 247 248 250;
-  --panel: 255 255 255;
-  --ink: 22 36 59;
-  --heading: 15 35 64;
-  --muted: 91 106 130;
-  --accent: 200 16 46;
-  --accent-strong: 158 12 36;
-  --hairline: #e6e9ef;
+  /* Pure White bg · Silver Grey surface · Patriot Blue headings · Crimson accent */
+  --bg: 255 255 255; /* Pure White #FFFFFF */
+  --surface: 241 241 241; /* Silver Grey #F1F1F1 */
+  --panel: 255 255 255; /* Pure White #FFFFFF */
+  --ink: 26 38 66; /* deep navy ink (derived from Patriot Blue) */
+  --heading: 13 27 61; /* Patriot Blue #0D1B3D */
+  --muted: 91 103 128; /* muted slate */
+  --accent: 215 38 38; /* Crimson Red #D72626 */
+  --accent-strong: 176 30 30; /* darker crimson (hover) #B01E1E */
+  --hairline: #e4e4e4;
 }
 
 .dark {
-  /* ---- Dark theme (soft premium navy, not black) ---- */
-  --bg: 11 18 32;
-  --surface: 17 26 43;
-  --panel: 17 26 43;
+  /* ---- Dark theme (Charcoal base, brighter crimson accent) ---- */
+  --bg: 26 26 26; /* Charcoal #1A1A1A */
+  --surface: 33 33 33; /* raised charcoal #212121 */
+  --panel: 38 38 38; /* card charcoal #262626 */
   --ink: 237 239 243;
-  --heading: 243 245 249;
-  --muted: 138 151 173;
-  --accent: 224 23 58;
-  --accent-strong: 255 59 78;
+  --heading: 245 245 245;
+  --muted: 161 167 178;
+  --accent: 238 61 61; /* brightened crimson for dark bg #EE3D3D */
+  --accent-strong: 245 99 99; /* lighter crimson (hover) #F56363 */
   --hairline: rgba(255, 255, 255, 0.1);
 }
 
@@ -61,7 +62,7 @@ body {
     @apply py-[clamp(68px,8.5vw,128px)];
   }
 
-  /* Clean editorial headings — Space Grotesk, sentence-case, not shouty */
+  /* Clean editorial headings — Poppins, sentence-case, not shouty */
   h1,
   h2,
   h3,
@@ -100,7 +101,7 @@ body {
 
   /* Clean form fields */
   .field-input {
-    @apply w-full rounded-[10px] border border-hairline bg-panel px-4 py-3 text-[1rem] text-ink outline-none transition placeholder:text-muted/70 focus:border-accent focus:shadow-[0_0_0_3px_rgba(200,16,46,.1)];
+    @apply w-full rounded-[10px] border border-hairline bg-panel px-4 py-3 text-[1rem] text-ink outline-none transition placeholder:text-muted/70 focus:border-accent focus:shadow-[0_0_0_3px_rgb(var(--accent)/0.15)];
   }
   .field-label {
     @apply mb-2 block text-[0.82rem] font-semibold text-muted;
@@ -194,11 +195,20 @@ body {
 .chat-dot:nth-child(2) { animation-delay: 0.15s; }
 .chat-dot:nth-child(3) { animation-delay: 0.3s; }
 
+@keyframes chatMsgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chat-msg {
+  animation: chatMsgIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .chat-launcher,
   .chat-ring,
   .chat-dot,
   .chat-pop,
+  .chat-msg,
   .chat-launcher:hover .chat-icon {
     animation: none;
   }

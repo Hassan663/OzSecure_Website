@@ -1,17 +1,41 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import { MessageCircle, X, Send, Phone, Mail, ArrowRight } from 'lucide-react';
 import Logo from '../Logo';
 import { site } from '@/data/site';
 import {
   WELCOME, FALLBACK, QUICK_REPLIES, QUOTE_INTRO, QUOTE_STEPS, LAUNCHER_LABEL,
   matchIntent, resolveChip, buildLeadPayload,
-} from '@/data/botFlows';
+} from '@/data/botKnowledge';
 
 // ── Swap the launcher icon here (e.g. Shield, HelpCircle) ────────────────────
 const LAUNCHER_ICON = MessageCircle;
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+
+// Auto-link the business phone/email wherever they appear in a bot message.
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const LINK_RE = new RegExp(`(${escapeRe(site.email)}|${escapeRe(site.phonePrimary)})`, 'g');
+function Linkify({ text }) {
+  return text.split(LINK_RE).map((part, i) => {
+    if (part === site.email) {
+      return (
+        <a key={i} href={`mailto:${site.email}`} className="font-medium text-accent underline underline-offset-2">
+          {part}
+        </a>
+      );
+    }
+    if (part === site.phonePrimary) {
+      return (
+        <a key={i} href={`tel:${site.phonePrimaryTel}`} className="font-medium text-accent underline underline-offset-2">
+          {part}
+        </a>
+      );
+    }
+    return <Fragment key={i}>{part}</Fragment>;
+  });
+}
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -33,7 +57,8 @@ export default function ChatWidget() {
 
   useEffect(() => {
     setReduced(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    return () => timers.current.forEach(clearTimeout);
+    const t = timers.current;
+    return () => t.forEach(clearTimeout);
   }, []);
 
   // One-time tooltip a few seconds after load.
@@ -80,18 +105,21 @@ export default function ChatWidget() {
     };
   }, [open]);
 
-  const addMessage = (from, text, chips = null) => {
+  // A message is { id, from, text, bullets?, note?, chips? }.
+  const addMessage = (from, payload) => {
     const id = (idRef.current += 1);
-    setMessages((m) => [...m, { id, from, text, chips }]);
+    const msg = typeof payload === 'string' ? { text: payload } : payload;
+    setMessages((m) => [...m, { id, from, ...msg }]);
   };
 
   // Bot reply with a typing delay so it feels alive.
-  const botSay = (text, chips = null, after = null) => {
+  const botSay = (answer, after = null) => {
+    const msg = typeof answer === 'string' ? { text: answer } : answer;
     setTyping(true);
-    const delay = reduced ? 0 : Math.min(1200, 450 + text.length * 11);
+    const delay = reduced ? 0 : Math.min(1300, 450 + (msg.text?.length || 0) * 10);
     const t = setTimeout(() => {
       setTyping(false);
-      addMessage('bot', text, chips);
+      addMessage('bot', msg);
       if (after) after();
     }, delay);
     timers.current.push(t);
@@ -102,7 +130,7 @@ export default function ChatWidget() {
     setHasNotif(false);
     setShowTooltip(false);
     setTooltipDone(true);
-    if (messages.length === 0) botSay(WELCOME, QUICK_REPLIES);
+    if (messages.length === 0) botSay({ text: WELCOME, chips: QUICK_REPLIES });
   };
   const closeChat = () => {
     setOpen(false);
@@ -115,16 +143,17 @@ export default function ChatWidget() {
     botSay(`${QUOTE_INTRO} ${QUOTE_STEPS[0].prompt}`);
   };
 
+  // Render an answer object (may start the lead flow instead of speaking).
   const respond = (res) => {
     if (!res) {
-      botSay(FALLBACK, null, startFlow);
+      botSay(FALLBACK);
       return;
     }
     if (res.startFlow) {
       startFlow();
       return;
     }
-    botSay(res.text, res.chips || null);
+    botSay(res);
   };
 
   const handleFlowAnswer = (text) => {
@@ -156,10 +185,19 @@ export default function ChatWidget() {
       const json = await res.json().catch(() => ({}));
       setTyping(false);
       if (!res.ok || !json.ok) throw new Error();
-      addMessage('bot', 'Thanks! Our team will be in touch shortly. 🎉', [{ id: 'services', label: 'Our Services' }]);
+      addMessage('bot', {
+        text: 'Thanks! Your request is in — our team will be in touch shortly. 🎉',
+        chips: [
+          { id: 'services', label: 'Our Services' },
+          { action: 'call', label: `Call ${site.phonePrimary}` },
+        ],
+      });
     } catch {
       setTyping(false);
-      addMessage('bot', `Sorry — I couldn't send that just now. Please call ${site.phonePrimary} and we'll sort it out.`);
+      addMessage('bot', {
+        text: `Sorry — I couldn’t send that just now. Please call ${site.phonePrimary} and we’ll sort it out.`,
+        chips: [{ action: 'call', label: 'Call now' }],
+      });
     }
   };
 
@@ -175,7 +213,43 @@ export default function ChatWidget() {
   const onChip = (chip) => {
     if (typing) return;
     addMessage('user', chip.label);
+    if (chip.action === 'quote' || chip.id === 'quote') {
+      startFlow();
+      return;
+    }
     respond(resolveChip(chip.id));
+  };
+
+  // A chip is a button (intent / quote) or a tappable link (call / email / route).
+  const chipClass =
+    'inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-hairline bg-panel px-3.5 py-2 text-[0.82rem] font-medium text-ink transition-colors hover:border-accent hover:text-accent';
+  const renderChip = (c, key) => {
+    if (c.action === 'call') {
+      return (
+        <a key={key} href={`tel:${site.phonePrimaryTel}`} className={chipClass}>
+          <Phone size={13} /> {c.label}
+        </a>
+      );
+    }
+    if (c.action === 'email') {
+      return (
+        <a key={key} href={`mailto:${site.email}`} className={chipClass}>
+          <Mail size={13} /> {c.label}
+        </a>
+      );
+    }
+    if (c.action === 'link') {
+      return (
+        <Link key={key} href={c.href} onClick={closeChat} className={chipClass}>
+          {c.label} <ArrowRight size={13} />
+        </Link>
+      );
+    }
+    return (
+      <button key={key} onClick={() => onChip(c)} className={chipClass}>
+        {c.label}
+      </button>
+    );
   };
 
   return (
@@ -202,7 +276,7 @@ export default function ChatWidget() {
           onClick={toggle}
           aria-label={open ? 'Close chat' : 'Open chat'}
           aria-expanded={open}
-          className="chat-launcher group relative flex h-[56px] w-[56px] items-center justify-center rounded-full bg-navy text-white shadow-[0_10px_30px_-8px_rgba(15,35,64,.6)] ring-2 ring-accent/60 transition-transform duration-200 hover:scale-105 sm:h-[60px] sm:w-[60px]"
+          className="chat-launcher group relative flex h-[56px] w-[56px] items-center justify-center rounded-full bg-navy text-white shadow-[0_10px_30px_-8px_rgba(13,27,61,.6)] ring-2 ring-accent/60 transition-transform duration-200 hover:scale-105 sm:h-[60px] sm:w-[60px]"
         >
           {!open && <span className="chat-ring pointer-events-none absolute inset-0 rounded-full bg-accent/30" />}
           {!open && hasNotif && (
@@ -221,7 +295,7 @@ export default function ChatWidget() {
           role="dialog"
           aria-modal="true"
           aria-label="OzSecure Assistant chat"
-          className="chat-pop fixed inset-0 z-[60] flex flex-col border-hairline bg-bg sm:inset-auto sm:bottom-[92px] sm:right-6 sm:h-[560px] sm:max-h-[calc(100vh-120px)] sm:w-[360px] sm:rounded-[16px] sm:border sm:shadow-2xl"
+          className="chat-pop fixed inset-0 z-[60] flex flex-col border-hairline bg-bg sm:inset-auto sm:bottom-[92px] sm:right-6 sm:h-[560px] sm:max-h-[calc(100vh-120px)] sm:w-[380px] sm:rounded-[16px] sm:border sm:shadow-2xl"
         >
           {/* Header */}
           <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-3">
@@ -230,7 +304,7 @@ export default function ChatWidget() {
               <div>
                 <div className="text-[0.95rem] font-semibold text-ink">OzSecure Assistant</div>
                 <div className="flex items-center gap-1.5 text-[0.72rem] text-muted">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" /> Online
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" /> Online · replies instantly
                 </div>
               </div>
             </div>
@@ -246,30 +320,33 @@ export default function ChatWidget() {
           {/* Messages */}
           <div ref={scrollRef} data-lenis-prevent className="flex-1 space-y-3 overflow-y-auto bg-surface/40 px-4 py-4">
             {messages.map((m) => (
-              <div key={m.id}>
+              <div key={m.id} className="chat-msg">
                 <div className={`flex ${m.from === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div
-                    className={`max-w-[82%] whitespace-pre-wrap rounded-[14px] px-3.5 py-2.5 text-[0.92rem] leading-relaxed ${
+                    className={`max-w-[85%] whitespace-pre-wrap rounded-[14px] px-3.5 py-2.5 text-[0.92rem] leading-relaxed ${
                       m.from === 'user'
                         ? 'rounded-br-[3px] bg-accent text-white'
                         : 'rounded-bl-[3px] border border-hairline bg-panel text-ink'
                     }`}
                   >
-                    {m.text}
+                    {m.from === 'bot' ? <Linkify text={m.text} /> : m.text}
+                    {m.bullets && (
+                      <ul className="mt-2 space-y-1.5">
+                        {m.bullets.map((b, i) => (
+                          <li key={i} className="flex gap-2">
+                            <span className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-accent" />
+                            <span>
+                              <Linkify text={b} />
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {m.note && <p className="mt-2 text-[0.8rem] text-muted">{m.note}</p>}
                   </div>
                 </div>
                 {m.from === 'bot' && m.chips && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {m.chips.map((c) => (
-                      <button
-                        key={c.id}
-                        onClick={() => onChip(c)}
-                        className="rounded-full border border-hairline bg-panel px-3.5 py-2 text-[0.82rem] font-medium text-ink transition-colors hover:border-accent hover:text-accent"
-                      >
-                        {c.label}
-                      </button>
-                    ))}
-                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">{m.chips.map((c, i) => renderChip(c, `${m.id}-${i}`))}</div>
                 )}
               </div>
             ))}
@@ -296,7 +373,7 @@ export default function ChatWidget() {
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message…"
+              placeholder="Ask a question…"
               aria-label="Type your message"
               className="field-input !py-2.5 text-[0.92rem]"
             />

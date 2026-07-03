@@ -1,7 +1,7 @@
 import PageHero from '@/components/PageHero';
 import ServiceDetail from '@/components/ServiceDetail';
 import CTA from '@/components/CTA';
-import { services } from '@/data/services';
+import { getServices } from '@/lib/services';
 
 export const metadata = {
   title: 'Services',
@@ -9,7 +9,8 @@ export const metadata = {
     'Security, traffic control, commercial cleaning and labour hire from OzSecure — accredited crews and 24/7 supervision across Sydney & Greater NSW.',
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
   return (
     <>
       <PageHero
@@ -20,7 +21,7 @@ export default function ServicesPage() {
       <section className="section">
         <div className="shell">
           {services.map((s, i) => (
-            <ServiceDetail key={s.id} service={s} index={i} />
+            <ServiceDetail key={s.slug} service={s} index={i} />
           ))}
         </div>
       </section>

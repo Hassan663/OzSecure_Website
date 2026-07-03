@@ -7,12 +7,16 @@ import ProcessSteps from '@/components/ProcessSteps';
 import Constellation from '@/components/Constellation';
 import Icon from '@/components/Icon';
 import CTA from '@/components/CTA';
-import { services, stats, whyUs } from '@/data/services';
+import TestimonialSlider from '@/components/TestimonialSlider';
+import { getServices } from '@/lib/services';
+import { getTestimonials } from '@/lib/testimonials';
+import { getHomepage } from '@/lib/homepage';
 
-export default function Home() {
+export default async function Home() {
+  const [services, testimonials, home] = await Promise.all([getServices(), getTestimonials(), getHomepage()]);
   return (
     <>
-      <Hero />
+      <Hero content={home} />
 
       {/* SERVICES */}
       <section className="section">
@@ -27,7 +31,7 @@ export default function Home() {
           </Reveal>
           <AnimateIn variant="fade" stagger={0.08} className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((s) => (
-              <ServiceCard key={s.id} service={s} />
+              <ServiceCard key={s.slug} service={s} />
             ))}
           </AnimateIn>
         </div>
@@ -36,7 +40,7 @@ export default function Home() {
       {/* STATS */}
       <section className="section border-y border-hairline bg-surface">
         <div className="shell grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4">
-          {stats.map((s) => (
+          {home.stats.map((s) => (
             <StatCounter key={s.label} value={s.value} suffix={s.suffix} label={s.label} />
           ))}
         </div>
@@ -47,13 +51,10 @@ export default function Home() {
         <div className="shell grid items-center gap-10 lg:grid-cols-2 lg:gap-[60px]">
           <Reveal>
             <span className="eyebrow">Why OzSecure</span>
-            <h2 className="mt-4 text-[clamp(2rem,4.4vw,3rem)]">Accountable from the first call to the final report.</h2>
-            <p className="mt-4 text-[1.05rem] leading-relaxed text-muted">
-              We run our own crews — no chains of subcontractors. That means consistent standards, direct supervision and
-              a single team that owns the outcome on your site.
-            </p>
+            <h2 className="mt-4 text-[clamp(2rem,4.4vw,3rem)]">{home.whyHeading}</h2>
+            <p className="mt-4 text-[1.05rem] leading-relaxed text-muted">{home.whyIntro}</p>
             <div className="mt-8 grid gap-6">
-              {whyUs.map((w) => (
+              {home.whyPoints.map((w) => (
                 <div key={w.title} className="flex items-start gap-4">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] border border-hairline bg-surface">
                     <Icon name={w.icon} size={20} className="text-accent" strokeWidth={1.9} />
@@ -88,30 +89,20 @@ export default function Home() {
             <span className="eyebrow">How we mobilise</span>
             <h2 className="mt-4 text-[clamp(2rem,4.4vw,3rem)]">From enquiry to crews on site</h2>
           </Reveal>
-          <ProcessSteps />
+          <ProcessSteps steps={home.processSteps} />
         </div>
       </section>
 
       {/* TESTIMONIAL */}
       <section className="section">
         <div className="shell">
-          <AnimateIn variant="scale" className="mx-auto max-w-[880px] text-center">
-            <span className="eyebrow justify-center">Client</span>
-            <blockquote className="mt-6 font-display text-[clamp(1.5rem,3.2vw,2.3rem)] font-medium leading-[1.3] text-heading">
-              &ldquo;OzSecure took over security, traffic and the builder&rsquo;s clean on our project. One supervisor, one
-              invoice, zero gaps — it took the coordination headache off my desk entirely.&rdquo;
-            </blockquote>
-            <div className="mt-6 text-[0.95rem] text-muted">
-              <b className="font-semibold text-ink">Project Manager</b> · Commercial Construction, NSW
-            </div>
+          <AnimateIn variant="scale">
+            <TestimonialSlider items={testimonials} />
           </AnimateIn>
         </div>
       </section>
 
-      <CTA
-        heading="Need crews on site this week?"
-        sub="Tell us what your site needs and we'll have a quote back to you fast — usually within one business day."
-      />
+      <CTA heading={home.ctaHeading} sub={home.ctaSubtext} />
     </>
   );
 }

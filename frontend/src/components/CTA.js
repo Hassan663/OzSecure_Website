@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import Reveal from './Reveal';
-import { site } from '@/data/site';
+import { getSiteSettings } from '@/lib/siteSettings';
 
-export default function CTA({ heading, sub }) {
+export default async function CTA({ heading, sub }) {
+  const site = await getSiteSettings();
   return (
     <section className="border-t border-hairline bg-surface">
       <div className="section shell">

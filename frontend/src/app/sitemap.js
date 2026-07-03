@@ -4,7 +4,7 @@ const BASE = 'https://ozsecuresecurity.com.au';
 
 // Public routes only — /admin is intentionally excluded (and noindexed).
 export default function sitemap() {
-  const routes = ['', '/services', '/about', '/contact'];
+  const routes = ['', '/services', '/about', '/careers', '/contact'];
   const servicePages = services.map((s) => `/services/${s.id}`);
   return [...routes, ...servicePages].map((path) => ({
     url: `${BASE}${path}`,

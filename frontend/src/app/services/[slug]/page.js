@@ -6,16 +6,20 @@ import PageHero from '@/components/PageHero';
 import AnimateIn from '@/components/AnimateIn';
 import Icon from '@/components/Icon';
 import CTA from '@/components/CTA';
-import { services } from '@/data/services';
+import { getServices, getServiceBySlug } from '@/lib/services';
+import { resolveImageSrc } from '@/lib/media';
 
-const getService = (slug) => services.find((s) => s.id === slug);
+// Prerender the known slugs at build; allow slugs added later to resolve at
+// runtime (ISR) instead of 404-ing.
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return services.map((s) => ({ slug: s.id }));
+export async function generateStaticParams() {
+  const services = await getServices();
+  return services.map((s) => ({ slug: s.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const service = getService(params.slug);
+export async function generateMetadata({ params }) {
+  const service = await getServiceBySlug(params.slug);
   if (!service) return {};
   return {
     title: service.title,
@@ -23,11 +27,12 @@ export function generateMetadata({ params }) {
   };
 }
 
-export default function ServicePage({ params }) {
-  const service = getService(params.slug);
+export default async function ServicePage({ params }) {
+  const service = await getServiceBySlug(params.slug);
   if (!service) notFound();
 
-  const others = services.filter((s) => s.id !== service.id);
+  const all = await getServices();
+  const others = all.filter((s) => s.slug !== service.slug);
   const lower = service.title.toLowerCase();
 
   return (
@@ -56,13 +61,15 @@ export default function ServicePage({ params }) {
           </AnimateIn>
           <AnimateIn variant="right" delay={0.1}>
             <div className="relative flex min-h-[400px] items-end overflow-hidden rounded-[14px] border border-hairline bg-gradient-to-br from-navy to-navy-deep p-8">
-              <Image
-                src={service.image}
-                alt={service.alt}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
+              {service.image && (
+                <Image
+                  src={resolveImageSrc(service.image)}
+                  alt={service.alt}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
+              )}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/25 to-transparent" />
               <div className="absolute left-7 top-7 flex h-14 w-14 items-center justify-center rounded-[10px] border border-white/15 bg-navy/55 backdrop-blur-sm">
                 <Icon name={service.icon} size={28} className="text-white" strokeWidth={1.8} />
@@ -126,8 +133,8 @@ export default function ServicePage({ params }) {
           <AnimateIn as="div" variant="fade" stagger={0.08} className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             {others.map((o) => (
               <Link
-                key={o.id}
-                href={`/services/${o.id}`}
+                key={o.slug}
+                href={`/services/${o.slug}`}
                 className="group flex flex-col rounded-[12px] border border-hairline bg-panel p-6 transition-[transform,box-shadow,border-color] duration-200 will-change-transform hover:-translate-y-1 hover:border-accent/30 hover:shadow-soft"
               >
                 <Icon name={o.icon} size={24} className="text-accent" strokeWidth={1.8} />

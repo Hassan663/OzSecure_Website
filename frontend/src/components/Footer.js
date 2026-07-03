@@ -1,6 +1,7 @@
+'use client';
 import Link from 'next/link';
 import { Phone, Mail, MapPin } from 'lucide-react';
-import { site } from '@/data/site';
+import { useSiteSettings } from './SettingsProvider';
 import Logo from './Logo';
 
 const serviceLinks = [
@@ -32,12 +33,14 @@ function Col({ title, links }) {
 }
 
 export default function Footer() {
+  const site = useSiteSettings();
   return (
     <footer className="border-t border-hairline bg-surface">
       <div className="shell grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr]">
         <div>
           <Logo className="h-14 w-auto sm:h-16" />
-          <p className="mt-5 max-w-[34ch] text-[0.96rem] leading-relaxed text-muted">
+          <p className="mt-4 text-[0.95rem] font-semibold text-accent">{site.tagline}</p>
+          <p className="mt-3 max-w-[34ch] text-[0.96rem] leading-relaxed text-muted">
             One accredited provider for security, traffic control, commercial cleaning and labour hire across {site.coverage}.
           </p>
         </div>

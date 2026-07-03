@@ -3,7 +3,7 @@ import PageHero from '@/components/PageHero';
 import AnimateIn from '@/components/AnimateIn';
 import QuoteForm from '@/components/QuoteForm';
 import Constellation from '@/components/Constellation';
-import { site } from '@/data/site';
+import { getSiteSettings } from '@/lib/siteSettings';
 
 export const metadata = {
   title: 'Contact',
@@ -11,7 +11,8 @@ export const metadata = {
     'Get a quote for security, traffic control, cleaning or labour hire. Call our 24/7 operations desk or send your site details and we\'ll respond fast.',
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const site = await getSiteSettings();
   return (
     <>
       <PageHero

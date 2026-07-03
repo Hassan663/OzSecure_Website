@@ -3,20 +3,20 @@ import { Fragment, useRef } from 'react';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ArrowRight, ShieldCheck, Clock, BadgeCheck, Users } from 'lucide-react';
-import { site } from '@/data/site';
+import { ArrowRight } from 'lucide-react';
+import { useSiteSettings } from './SettingsProvider';
+import { homepageDefaults } from '@/data/homepage';
+import Icon from './Icon';
 import HeroShowcase from './HeroShowcase';
 
-const trust = [
-  { icon: ShieldCheck, label: 'Fully Licensed' },
-  { icon: Clock, label: '24/7 Operations' },
-  { icon: BadgeCheck, label: `${site.yearsExperience} Years Experience` },
-  { icon: Users, label: 'Vetted & White-Carded' },
-];
-
-const HEAD = [{ t: 'Your' }, { t: 'site,' }, { t: 'secured', accent: true }, { t: 'end to end.' }];
-
-export default function Hero() {
+export default function Hero({ content = homepageDefaults }) {
+  const site = useSiteSettings();
+  const accentWord = (content.heroHeadlineAccent || '').trim().toLowerCase();
+  const headWords = (content.heroHeadline || '').split(' ').map((t) => ({
+    t,
+    accent: accentWord && t.replace(/[^a-z0-9]/gi, '').toLowerCase() === accentWord,
+  }));
+  const trust = content.trust || [];
   const sectionRef = useRef(null);
   const ctaRef = useRef(null);
 
@@ -63,34 +63,32 @@ export default function Hero() {
     <section ref={sectionRef} className="relative overflow-hidden border-b border-hairline">
       <div className="shell grid items-center gap-10 py-[clamp(52px,7vw,96px)] lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
         <div>
-          <span className="hero-kicker eyebrow">Security · Traffic · Cleaning · Labour</span>
+          <span className="hero-kicker eyebrow">{content.heroEyebrow}</span>
           <h1 className="mt-5 text-[clamp(2.3rem,6vw,4.6rem)]">
-            {HEAD.map((w, i) => (
+            {headWords.map((w, i) => (
               <Fragment key={i}>
                 <span className="hero-word inline-block will-change-transform">
                   {w.accent ? <em className="not-italic text-accent">{w.t}</em> : w.t}
                 </span>
-                {i < HEAD.length - 1 ? ' ' : ''}
+                {i < headWords.length - 1 ? ' ' : ''}
               </Fragment>
             ))}
           </h1>
-          <p className="hero-sub mt-6 max-w-[48ch] text-[1.12rem] leading-relaxed text-muted">
-            One accredited provider for security, traffic control, commercial cleaning and labour hire — staffed,
-            supervised and operating around the clock across {site.coverage}.
-          </p>
+          <p className="hero-sub mt-6 max-w-[48ch] text-[1.12rem] leading-relaxed text-muted">{content.heroSubtext}</p>
+          <p className="hero-sub mt-5 text-[1.02rem] font-semibold text-accent">{site.tagline}</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link ref={ctaRef} href="/contact" className="hero-cta btn btn-primary w-full justify-center sm:w-auto">
-              Request a Quote <ArrowRight size={16} />
+              {content.heroCtaPrimaryLabel} <ArrowRight size={16} />
             </Link>
             <Link href="/services" className="hero-cta btn btn-ghost w-full justify-center sm:w-auto">
-              Our Services
+              {content.heroCtaSecondaryLabel}
             </Link>
           </div>
           <div className="hero-trust mt-12 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-hairline pt-7 sm:max-w-[520px]">
-            {trust.map(({ icon: Ico, label }) => (
-              <div key={label} className="flex items-center gap-2.5 text-[0.9rem] font-medium text-muted">
-                <Ico size={17} className="shrink-0 text-accent" />
-                {label}
+            {trust.map((t, i) => (
+              <div key={`${t.label}-${i}`} className="flex items-center gap-2.5 text-[0.9rem] font-medium text-muted">
+                <Icon name={t.icon} size={17} className="shrink-0 text-accent" />
+                {t.label}
               </div>
             ))}
           </div>

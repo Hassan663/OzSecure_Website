@@ -57,7 +57,7 @@ export default function HeroShowcase() {
   return (
     <div
       ref={rootRef}
-      className="hero-visual relative aspect-[4/5] w-full overflow-hidden rounded-[14px] border border-hairline bg-gradient-to-br from-navy via-navy-deep to-[#3a0b16] shadow-soft"
+      className="hero-visual relative aspect-[4/5] w-full overflow-hidden rounded-[14px] border border-hairline bg-gradient-to-br from-navy via-navy-deep to-[#3d1010] shadow-soft"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}

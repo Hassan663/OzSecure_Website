@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { ArrowRight, Check, Loader2 } from 'lucide-react';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 const initial = { name: '', company: '', email: '', phone: '', service: '', location: '', message: '', website: '' };
 
 export default function QuoteForm() {

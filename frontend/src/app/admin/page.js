@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
+import AdminTabs from '@/components/admin/AdminTabs';
 import { adminFetch, getToken, clearToken } from '@/lib/admin';
 
 const LIMIT = 20;
@@ -30,15 +31,17 @@ function StatusBadge({ status }) {
   );
 }
 
+const SOURCE_STYLES = {
+  chatbot: { label: 'Chatbot', cls: 'bg-accent/12 text-accent' },
+  careers: { label: 'Careers', cls: 'bg-blue-500/12 text-blue-600 dark:text-blue-400' },
+  website: { label: 'Website', cls: 'bg-muted/12 text-muted' },
+};
+
 function SourceBadge({ source }) {
-  const isBot = source === 'chatbot';
+  const s = SOURCE_STYLES[source] || SOURCE_STYLES.website;
   return (
-    <span
-      className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[0.66rem] font-semibold uppercase tracking-wide ${
-        isBot ? 'bg-accent/12 text-accent' : 'bg-muted/12 text-muted'
-      }`}
-    >
-      {isBot ? 'Chatbot' : 'Website'}
+    <span className={`inline-flex shrink-0 rounded-full px-2 py-0.5 text-[0.66rem] font-semibold uppercase tracking-wide ${s.cls}`}>
+      {s.label}
     </span>
   );
 }
@@ -148,9 +151,7 @@ export default function AdminDashboard() {
       <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-hairline bg-bg/90 px-5 py-3 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <Logo className="h-8 w-auto" />
-          <span className="hidden text-[0.8rem] font-semibold uppercase tracking-[0.12em] text-muted sm:inline">
-            Submissions
-          </span>
+          <AdminTabs />
         </div>
         <div className="flex items-center gap-2">
           <button onClick={load} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-hairline text-muted hover:text-ink" aria-label="Refresh">

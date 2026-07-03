@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 
 /**
- * Clean stat — large Space Grotesk numeral that counts up on scroll, muted
+ * Clean stat — large Poppins numeral that counts up on scroll, muted
  * label, thin accent tick. Reduced motion → final value, no animation.
  */
 export default function StatCounter({ value, suffix = '', label }) {

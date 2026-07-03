@@ -15,7 +15,7 @@ const validators = [
   body('service').optional().trim().isLength({ max: 80 }),
   body('location').optional().trim().isLength({ max: 120 }),
   body('message').optional().trim().isLength({ max: 4000 }),
-  body('source').optional().trim().isIn(['website', 'chatbot']).withMessage('Invalid source'),
+  body('source').optional().trim().isIn(['website', 'chatbot', 'careers']).withMessage('Invalid source'),
   // honeypot — bots fill hidden fields; humans never do
   body('website').optional().isEmpty().withMessage('Spam detected'),
   // require an email OR a phone

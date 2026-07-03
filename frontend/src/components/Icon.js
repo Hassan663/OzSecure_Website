@@ -35,6 +35,9 @@ const map = {
   Users,
 };
 
+// Names available to the admin icon picker (kept in sync with `map`).
+export const ICON_NAMES = Object.keys(map);
+
 export default function Icon({ name, ...props }) {
   const Cmp = map[name] || Shield;
   return <Cmp {...props} />;

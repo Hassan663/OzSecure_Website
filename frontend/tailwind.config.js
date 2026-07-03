@@ -27,19 +27,23 @@ module.exports = {
           2: 'rgb(var(--surface) / <alpha-value>)',
         },
         line: { DEFAULT: 'var(--hairline)', dark: 'var(--hairline)' },
-        // fixed brand tokens (used by panels not yet migrated; retired in later phases)
-        navy: { DEFAULT: '#0F2340', deep: '#0A1830', soft: '#1A2F50' },
-        red: { brand: '#C8102E', dark: '#9E0C24', glow: '#FF6B7E' },
+        // ---- official OzSecure brand tokens ----
+        // Patriot Blue navy: base #0D1B3D, with deep (darker) + soft (lighter) derived
+        navy: { DEFAULT: '#0D1B3D', deep: '#081027', soft: '#16264E' },
+        // Crimson Red accent: brand #D72626, dark (hover) + glow (lightened) derived
+        red: { brand: '#D72626', dark: '#B01E1E', glow: '#F56363' },
+        charcoal: '#1A1A1A', // darkest surface / dark-mode base
+        silver: '#F1F1F1', // light section background
       },
       fontFamily: {
-        display: ['var(--font-display)', 'sans-serif'], // Space Grotesk
-        body: ['var(--font-body)', 'sans-serif'], // Inter
-        label: ['var(--font-body)', 'sans-serif'], // alias → Inter
+        display: ['var(--font-display)', 'sans-serif'], // Poppins
+        body: ['var(--font-body)', 'sans-serif'], // Montserrat
+        label: ['var(--font-body)', 'sans-serif'], // alias → Montserrat
       },
       maxWidth: { shell: '1200px' },
       boxShadow: {
-        soft: '0 10px 40px -24px rgba(15,35,64,.18)',
-        card: '0 18px 50px -30px rgba(15,35,64,.22)',
+        soft: '0 10px 40px -24px rgba(13,27,61,.18)',
+        card: '0 18px 50px -30px rgba(13,27,61,.22)',
       },
       letterSpacing: { label: '0.18em' },
     },

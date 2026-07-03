@@ -5,7 +5,7 @@ import Reveal from '@/components/Reveal';
 import AnimateIn from '@/components/AnimateIn';
 import Icon from '@/components/Icon';
 import CTA from '@/components/CTA';
-import { site } from '@/data/site';
+import { getSiteSettings } from '@/lib/siteSettings';
 
 export const metadata = {
   title: 'About',
@@ -19,8 +19,8 @@ const values = [
   { icon: 'Clock', title: 'Responsiveness', body: 'A 24/7 operations desk means callouts, swaps and incidents are handled fast — not left until business hours.' },
 ];
 
-const compliance = [
-  { title: 'Security master licence', body: `Officers individually licensed and screened before they set foot on your site (MLN ${site.mln}).` },
+const compliance = (mln) => [
+  { title: 'Security master licence', body: `Officers individually licensed and screened before they set foot on your site (MLN ${mln}).` },
   { title: 'Traffic control accreditation', body: 'Controllers accredited to the relevant state standard, with traffic management plans on file.' },
   { title: "Public liability & workers' comp", body: 'Comprehensive cover across every service line — certificates of currency on request.' },
   { title: 'White card & site inductions', body: 'Labour and cleaning crews inducted and construction-ready before deployment.' },
@@ -39,7 +39,9 @@ function InfoPanel({ title, body, image, alt }) {
   );
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const site = await getSiteSettings();
+  const complianceItems = compliance(site.mln);
   return (
     <>
       <PageHero
@@ -108,7 +110,7 @@ export default function AboutPage() {
               </p>
             </AnimateIn>
             <AnimateIn as="div" stagger={0.1} className="mt-8 grid gap-5">
-              {compliance.map((c) => (
+              {complianceItems.map((c) => (
                 <div key={c.title} className="flex items-start gap-4">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] border border-hairline bg-surface">
                     <Check size={20} className="text-accent" strokeWidth={2.4} />
