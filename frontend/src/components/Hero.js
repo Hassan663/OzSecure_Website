@@ -7,7 +7,12 @@ import { ArrowRight } from 'lucide-react';
 import { useSiteSettings } from './SettingsProvider';
 import { homepageDefaults } from '@/data/homepage';
 import Icon from './Icon';
-import HeroShowcase from './HeroShowcase';
+import HeroSlider from './HeroSlider';
+
+// Brighter crimson used for accent text sitting over the dark hero photos, so it
+// stays legible (AA) in BOTH themes — the theme `--accent` would be too dark on
+// the image in light mode.
+const HERO_ACCENT = '#F04A4A';
 
 export default function Hero({ content = homepageDefaults }) {
   const site = useSiteSettings();
@@ -30,8 +35,7 @@ export default function Hero({ content = homepageDefaults }) {
           .from('.hero-word', { autoAlpha: 0, yPercent: 60, duration: 0.7, stagger: 0.07 }, '-=0.15')
           .from('.hero-sub', { autoAlpha: 0, y: 16, duration: 0.6 }, '-=0.3')
           .from('.hero-cta', { autoAlpha: 0, y: 14, duration: 0.5, stagger: 0.08 }, '-=0.25')
-          .from('.hero-trust > *', { autoAlpha: 0, y: 10, duration: 0.45, stagger: 0.06 }, '-=0.2')
-          .from('.hero-visual', { autoAlpha: 0, scale: 0.96, duration: 0.8, ease: 'power2.out' }, 0.15);
+          .from('.hero-trust > *', { autoAlpha: 0, y: 10, duration: 0.45, stagger: 0.06 }, '-=0.2');
       });
 
       mm.add('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
@@ -60,42 +64,54 @@ export default function Hero({ content = homepageDefaults }) {
   );
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden border-b border-hairline">
-      <div className="shell grid items-center gap-10 py-[clamp(52px,7vw,96px)] lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-        <div>
-          <span className="hero-kicker eyebrow">{content.heroEyebrow}</span>
-          <h1 className="mt-5 text-[clamp(2.3rem,6vw,4.6rem)]">
-            {headWords.map((w, i) => (
-              <Fragment key={i}>
-                <span className="hero-word inline-block will-change-transform">
-                  {w.accent ? <em className="not-italic text-accent">{w.t}</em> : w.t}
-                </span>
-                {i < headWords.length - 1 ? ' ' : ''}
-              </Fragment>
-            ))}
-          </h1>
-          <p className="hero-sub mt-6 max-w-[48ch] text-[1.12rem] leading-relaxed text-muted">{content.heroSubtext}</p>
-          <p className="hero-sub mt-5 text-[1.02rem] font-semibold text-accent">{site.tagline}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Link ref={ctaRef} href="/contact" className="hero-cta btn btn-primary w-full justify-center sm:w-auto">
-              {content.heroCtaPrimaryLabel} <ArrowRight size={16} />
-            </Link>
-            <Link href="/services" className="hero-cta btn btn-ghost w-full justify-center sm:w-auto">
-              {content.heroCtaSecondaryLabel}
-            </Link>
-          </div>
-          <div className="hero-trust mt-12 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-hairline pt-7 sm:max-w-[520px]">
-            {trust.map((t, i) => (
-              <div key={`${t.label}-${i}`} className="flex items-center gap-2.5 text-[0.9rem] font-medium text-muted">
-                <Icon name={t.icon} size={17} className="shrink-0 text-accent" />
-                {t.label}
-              </div>
-            ))}
+    <div ref={sectionRef}>
+      <HeroSlider>
+        <div className="shell flex min-h-[88vh] items-center py-[clamp(96px,15vh,160px)] sm:min-h-[85vh]">
+          <div className="max-w-[720px] text-center sm:text-left [text-shadow:0_1px_16px_rgba(2,6,20,0.5)]">
+            <span className="hero-kicker inline-flex items-center gap-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-white/85">
+              <span className="h-[2px] w-5 shrink-0 bg-accent" />
+              {content.heroEyebrow}
+            </span>
+
+            <h1 className="mt-5 !text-white text-[clamp(2.2rem,6vw,4.6rem)]">
+              {headWords.map((w, i) => (
+                <Fragment key={i}>
+                  <span className="hero-word inline-block will-change-transform">
+                    {w.accent ? <em className="not-italic" style={{ color: HERO_ACCENT }}>{w.t}</em> : w.t}
+                  </span>
+                  {i < headWords.length - 1 ? ' ' : ''}
+                </Fragment>
+              ))}
+            </h1>
+
+            <p className="hero-sub mx-auto mt-6 max-w-[52ch] text-[1.1rem] leading-relaxed text-white/90 sm:mx-0">
+              {content.heroSubtext}
+            </p>
+            <p className="hero-sub mt-5 text-[1.05rem] font-semibold text-red-glow">{site.tagline}</p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-start">
+              <Link ref={ctaRef} href="/contact" className="hero-cta btn btn-primary w-full justify-center sm:w-auto">
+                {content.heroCtaPrimaryLabel} <ArrowRight size={16} />
+              </Link>
+              <Link
+                href="/services"
+                className="hero-cta btn w-full justify-center border border-white/40 bg-white/5 text-white backdrop-blur-sm transition-colors hover:bg-white/15 sm:w-auto"
+              >
+                {content.heroCtaSecondaryLabel}
+              </Link>
+            </div>
+
+            <div className="hero-trust mx-auto mt-10 flex max-w-[640px] flex-wrap justify-center gap-x-6 gap-y-3 border-t border-white/15 pt-7 sm:mx-0 sm:justify-start">
+              {trust.map((t, i) => (
+                <div key={`${t.label}-${i}`} className="flex items-center gap-2.5 text-[0.9rem] font-medium text-white/90">
+                  <Icon name={t.icon} size={17} className="shrink-0 text-red-glow" />
+                  {t.label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-
-        <HeroShowcase />
-      </div>
-    </section>
+      </HeroSlider>
+    </div>
   );
 }

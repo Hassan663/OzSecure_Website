@@ -15,6 +15,7 @@ import {
   Star,
   BadgeCheck,
   Users,
+  Umbrella,
 } from 'lucide-react';
 
 const map = {
@@ -33,6 +34,7 @@ const map = {
   Star,
   BadgeCheck,
   Users,
+  Umbrella,
 };
 
 // Names available to the admin icon picker (kept in sync with `map`).

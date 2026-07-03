@@ -7,5 +7,6 @@ dist/
 *.log
 .DS_Store
 
-# Local JSON store (created at runtime when MONGODB_URI is not set)
-data/
+# Local JSON store (created at runtime when MONGODB_URI is not set).
+# Anchored to the backend root so it does NOT match src/data/ (seed defaults).
+/data/

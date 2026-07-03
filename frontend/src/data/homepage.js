@@ -10,6 +10,7 @@ export const homepageDefaults = {
   heroCtaSecondaryLabel: 'Our Services',
   trust: [
     { icon: 'ShieldCheck', label: 'Fully Licensed' },
+    { icon: 'Umbrella', label: 'Fully Insured' },
     { icon: 'Clock', label: '24/7 Operations' },
     { icon: 'BadgeCheck', label: '15+ Years Experience' },
     { icon: 'Users', label: 'Vetted & White-Carded' },
