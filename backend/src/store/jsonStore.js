@@ -247,6 +247,7 @@ export async function init() {
         ...Object.fromEntries(ALLOWED.map((k) => [k, (data[k] ?? '').toString().trim()])),
         status: 'new',
         source: data.source || 'website',
+        emailSent: false,
         createdAt: new Date().toISOString(),
       };
       await withLock(async () => {
@@ -255,6 +256,17 @@ export async function init() {
         await writeAll(all);
       });
       return record;
+    },
+
+    async markEmailSent(id, sent) {
+      await withLock(async () => {
+        const all = await readAll();
+        const q = all.find((x) => x.id === id);
+        if (q) {
+          q.emailSent = !!sent;
+          await writeAll(all);
+        }
+      });
     },
 
     async listQueries({ status, page = 1, limit = 20 } = {}) {

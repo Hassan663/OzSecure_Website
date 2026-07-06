@@ -34,6 +34,7 @@ export async function init() {
         location: data.location,
         message: data.message,
         source: data.source || 'website',
+        emailSent: false,
       });
       return toPlain(doc);
     },
@@ -61,6 +62,11 @@ export async function init() {
     async updateStatus(id, status) {
       if (!mongoose.isValidObjectId(id)) return null;
       return toPlain(await Query.findByIdAndUpdate(id, { status }, { new: true }));
+    },
+
+    async markEmailSent(id, sent) {
+      if (!mongoose.isValidObjectId(id)) return;
+      await Query.findByIdAndUpdate(id, { emailSent: !!sent });
     },
 
     async deleteQuery(id) {

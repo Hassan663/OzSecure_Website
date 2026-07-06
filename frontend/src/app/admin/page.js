@@ -2,12 +2,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  LogOut, RefreshCw, Search, X, Archive, Check, Trash2, Mail, Phone, MapPin, Building2, ChevronLeft, ChevronRight, Inbox,
+  RefreshCw, Search, X, Archive, Check, Trash2, Mail, Phone, MapPin, Building2, ChevronLeft, ChevronRight, Inbox,
 } from 'lucide-react';
-import Logo from '@/components/Logo';
-import ThemeToggle from '@/components/ThemeToggle';
-import AdminTabs from '@/components/admin/AdminTabs';
-import { adminFetch, getToken, clearToken } from '@/lib/admin';
+import { adminFetch, getToken } from '@/lib/admin';
 
 const LIMIT = 20;
 const FILTERS = [
@@ -109,11 +106,6 @@ export default function AdminDashboard() {
     if (ready) load();
   }, [ready, load]);
 
-  const logout = () => {
-    clearToken();
-    router.replace('/admin/login');
-  };
-
   const changeStatus = async (id, status) => {
     try {
       const data = await adminFetch(`/queries/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
@@ -143,27 +135,10 @@ export default function AdminDashboard() {
       )
     : items;
 
-  if (!ready) return <div className="min-h-screen bg-bg" />;
+  if (!ready) return null;
 
   return (
-    <div className="min-h-screen bg-bg text-ink">
-      {/* Top bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-hairline bg-bg/90 px-5 py-3 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <Logo className="h-8 w-auto" />
-          <AdminTabs />
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={load} className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-hairline text-muted hover:text-ink" aria-label="Refresh">
-            <RefreshCw size={17} className={loading ? 'animate-spin' : ''} />
-          </button>
-          <ThemeToggle />
-          <button onClick={logout} className="flex items-center gap-2 rounded-[10px] border border-hairline px-3.5 py-2.5 text-[0.85rem] font-medium text-muted hover:text-ink">
-            <LogOut size={16} /> <span className="hidden sm:inline">Log out</span>
-          </button>
-        </div>
-      </header>
-
+    <div className="text-ink">
       <div className="mx-auto w-full max-w-shell px-5 py-8">
         {/* Stat cards */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -198,14 +173,23 @@ export default function AdminDashboard() {
               </button>
             ))}
           </div>
-          <div className="relative">
-            <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search name or email…"
-              className="field-input !py-2 !pl-9 text-[0.9rem] sm:w-[280px]"
-            />
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search name or email…"
+                className="field-input !py-2 !pl-9 text-[0.9rem] sm:w-[280px]"
+              />
+            </div>
+            <button
+              onClick={load}
+              aria-label="Refresh"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-hairline text-muted hover:text-ink"
+            >
+              <RefreshCw size={17} className={loading ? 'animate-spin' : ''} />
+            </button>
           </div>
         </div>
 
@@ -239,6 +223,9 @@ export default function AdminDashboard() {
                       <span className="flex items-center gap-2">
                         {q.name || '—'}
                         <SourceBadge source={q.source} />
+                        <span title={q.emailSent ? 'Team notified by email' : 'Email not sent'} className="inline-flex">
+                          <Mail size={13} className={q.emailSent ? 'text-emerald-500' : 'text-muted/40'} />
+                        </span>
                       </span>
                     </td>
                     <td className="px-4 py-3 text-muted">{q.company || '—'}</td>
@@ -322,7 +309,12 @@ function Drawer({ query, onClose, onStatus, onDelete }) {
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-5" data-lenis-prevent>
-          <div className="text-[0.78rem] uppercase tracking-[0.08em] text-muted">{fmtDate(query.createdAt)}</div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="text-[0.78rem] uppercase tracking-[0.08em] text-muted">{fmtDate(query.createdAt)}</div>
+            <span className={`inline-flex items-center gap-1.5 text-[0.78rem] font-medium ${query.emailSent ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted'}`}>
+              <Mail size={13} /> {query.emailSent ? 'Team notified' : 'Not emailed'}
+            </span>
+          </div>
           <div className="mt-4 grid gap-3">
             <Row icon={Building2}>{query.company}</Row>
             <Row icon={Mail}>

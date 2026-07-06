@@ -12,6 +12,7 @@ const QuerySchema = new mongoose.Schema(
     message: { type: String, trim: true },
     status: { type: String, enum: ['new', 'read', 'archived'], default: 'new', index: true },
     source: { type: String, default: 'website' },
+    emailSent: { type: Boolean, default: false }, // team notification delivered?
     createdAt: { type: Date, default: Date.now, index: true },
   },
   { versionKey: false }

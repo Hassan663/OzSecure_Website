@@ -203,6 +203,18 @@ body {
   animation: chatMsgIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Admin mobile nav drawer — slide in from the left */
+@keyframes adminDrawerIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.admin-drawer {
+  animation: adminDrawerIn 0.25s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-drawer { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .chat-launcher,
   .chat-ring,

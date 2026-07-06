@@ -2,14 +2,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  LogOut, Plus, X, Save, Trash2, Check, AlertCircle, ArrowUp, ArrowDown, Eye, EyeOff, Pencil,
+  Plus, X, Save, Trash2, Check, AlertCircle, ArrowUp, ArrowDown, Eye, EyeOff, Pencil,
 } from 'lucide-react';
-import Logo from '@/components/Logo';
-import ThemeToggle from '@/components/ThemeToggle';
 import Icon, { ICON_NAMES } from '@/components/Icon';
-import AdminTabs from '@/components/admin/AdminTabs';
 import ImageField from '@/components/admin/ImageField';
-import { adminFetch, getToken, clearToken } from '@/lib/admin';
+import { adminFetch, getToken } from '@/lib/admin';
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -279,27 +276,10 @@ export default function AdminServicesPage() {
     }
   };
 
-  const logout = () => {
-    clearToken();
-    router.replace('/admin/login');
-  };
-
-  if (!ready) return <div className="min-h-screen bg-bg" />;
+  if (!ready) return null;
 
   return (
-    <div className="min-h-screen bg-bg text-ink">
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-hairline bg-bg/90 px-5 py-3 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <Logo className="h-8 w-auto" />
-          <AdminTabs />
-        </div>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <button onClick={logout} className="flex items-center gap-2 rounded-[10px] border border-hairline px-3.5 py-2.5 text-[0.85rem] font-medium text-muted hover:text-ink">
-            <LogOut size={16} /> <span className="hidden sm:inline">Log out</span>
-          </button>
-        </div>
-      </header>
+    <div className="text-ink">
 
       <div className="mx-auto w-full max-w-shell px-5 py-8">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

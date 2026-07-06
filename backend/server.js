@@ -53,11 +53,9 @@ app.use((_req, res) => res.status(404).json({ ok: false, message: 'Not found' })
 // Initialise storage (Mongo or JSON) before accepting traffic.
 initStore()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`OzSecure API running on http://localhost:${PORT}`);
-      if (!process.env.SMTP_HOST) {
-        console.log('SMTP not configured — running in DEV mode (submissions logged to console).');
-      }
+    // Bind to 0.0.0.0 on the platform-assigned port (required by Render/most PaaS).
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`OzSecure API listening on 0.0.0.0:${PORT}`);
       if (!process.env.ADMIN_PASSWORD) {
         console.warn('⚠  ADMIN_PASSWORD not set — using dev default "admin123". Set ADMIN_PASSWORD in production!');
       }

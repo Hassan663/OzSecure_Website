@@ -70,6 +70,7 @@ export const createQuery = (data) => ensure().createQuery(data);
 export const listQueries = (opts) => ensure().listQueries(opts);
 export const getQuery = (id) => ensure().getQuery(id);
 export const updateStatus = (id, status) => ensure().updateStatus(id, status);
+export const markEmailSent = (id, sent) => ensure().markEmailSent(id, sent);
 export const deleteQuery = (id) => ensure().deleteQuery(id);
 export const getStats = () => ensure().getStats();
 

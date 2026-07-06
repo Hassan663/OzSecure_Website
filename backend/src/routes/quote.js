@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
-import { sendQuoteEmail } from '../utils/mailer.js';
-import { createQuery } from '../store/index.js';
+import { sendLeadEmails } from '../utils/mailer.js';
+import { createQuery, markEmailSent } from '../store/index.js';
 
 const router = Router();
 
@@ -31,9 +31,11 @@ router.post('/', validators, async (req, res) => {
     return res.status(400).json({ ok: false, errors: errors.array().map((e) => e.msg) });
   }
 
-  // 1) Persist first — this is the source of truth for the admin panel.
+  // 1) Persist first — this is the source of truth for the admin panel. Email
+  //    must NEVER block or fail this step.
+  let lead;
   try {
-    await createQuery(req.body);
+    lead = await createQuery(req.body);
   } catch (err) {
     console.error('Quote save failed:', err);
     return res
@@ -41,19 +43,20 @@ router.post('/', validators, async (req, res) => {
       .json({ ok: false, message: 'We could not record your request right now. Please call 0450 717 765.' });
   }
 
-  // 2) Then attempt email. A delivery failure must NOT fail the request — the
-  //    submission is already saved and the user should still see success.
-  let mail = { delivered: false };
+  // 2) Then send the team notification + submitter auto-reply via Resend.
+  //    sendLeadEmails never throws; a delivery failure must not fail the request.
+  let emails = { notified: false, autoReplied: false };
   try {
-    mail = await sendQuoteEmail(req.body);
+    emails = await sendLeadEmails(lead);
+    if (emails.notified) await markEmailSent(lead.id, true);
   } catch (err) {
-    console.error('Quote email failed (submission still saved):', err);
+    console.error('Lead email step failed (submission still saved):', err);
   }
 
   return res.status(200).json({
     ok: true,
     message: 'Thanks — your request has been received. Our team will be in touch shortly.',
-    ...mail,
+    emailSent: emails.notified,
   });
 });
 

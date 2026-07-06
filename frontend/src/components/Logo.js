@@ -13,8 +13,13 @@ import Image from 'next/image';
  * theme causes no width jump / layout shift. Only the visible image is
  * announced (the hidden one is display:none, ignored by assistive tech).
  */
-export default function Logo({ className = 'h-12 w-auto sm:h-16', priority = false }) {
+export default function Logo({ className = 'h-12 w-auto sm:h-16', priority = false, reverse = false }) {
   const common = { alt: 'OzSecure Services', priority, sizes: '220px' };
+  // `reverse` forces the white knockout logo regardless of theme — for use on a
+  // dark surface (e.g. the navy admin sidebar) in both light and dark mode.
+  if (reverse) {
+    return <Image src="/logo-light.png" width={930} height={858} {...common} className={className} />;
+  }
   return (
     <>
       <Image src="/logo-trans.png" width={2402} height={2219} {...common} className={`${className} block dark:hidden`} />
