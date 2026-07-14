@@ -84,7 +84,7 @@ export default function HeroSlider({ children }) {
             ~16% on the right (subject stays visible). Mobile covers more of the
             width (centred text over more of the image). Both keep white text AA
             over even the brightest slide (cleaning). */}
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(13,27,61,0.92)_0%,rgba(13,27,61,0.74)_55%,rgba(13,27,61,0.5)_100%)] sm:bg-[linear-gradient(90deg,rgba(13,27,61,0.9)_0%,rgba(13,27,61,0.8)_38%,rgba(13,27,61,0.42)_66%,rgba(13,27,61,0.16)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(13,27,61,0.93)_0%,rgba(13,27,61,0.78)_55%,rgba(13,27,61,0.5)_100%)] sm:bg-[linear-gradient(90deg,rgba(13,27,61,0.92)_0%,rgba(13,27,61,0.86)_42%,rgba(13,27,61,0.5)_68%,rgba(13,27,61,0.18)_100%)]" />
         {/* Slight bottom darken so trust badges / dots stay readable */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/60 via-navy/5 to-transparent" />
       </div>

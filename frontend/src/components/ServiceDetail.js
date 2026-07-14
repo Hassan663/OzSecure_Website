@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Check, ArrowRight } from 'lucide-react';
 import Icon from './Icon';
 import AnimateIn from './AnimateIn';
+import Parallax from './Parallax';
 import { resolveImageSrc } from '@/lib/media';
 
 /**
@@ -38,13 +39,15 @@ export default function ServiceDetail({ service, index }) {
     <AnimateIn variant={flip ? 'left' : 'right'} delay={0.1}>
       <div className="relative flex min-h-[340px] items-end overflow-hidden rounded-[14px] border border-hairline bg-gradient-to-br from-navy to-navy-deep p-7">
         {service.image && (
-          <Image
-            src={resolveImageSrc(service.image)}
-            alt={service.alt}
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-          />
+          <Parallax>
+            <Image
+              src={resolveImageSrc(service.image)}
+              alt={service.alt}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </Parallax>
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/25 to-transparent" />
         <div className="absolute left-6 top-6 flex h-14 w-14 items-center justify-center rounded-[10px] border border-white/15 bg-navy/55 backdrop-blur-sm">

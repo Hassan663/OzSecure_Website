@@ -47,10 +47,12 @@ router.post('/', validators, async (req, res) => {
   //    sendLeadEmails never throws; a delivery failure must not fail the request.
   let emails = { notified: false, autoReplied: false };
   try {
+    console.log(`✉  Lead saved (id=${lead.id}, source=${lead.source || 'website'}) — starting email step…`);
     emails = await sendLeadEmails(lead);
+    console.log(`✉  Email step finished → notified=${emails.notified} autoReplied=${emails.autoReplied}`);
     if (emails.notified) await markEmailSent(lead.id, true);
   } catch (err) {
-    console.error('Lead email step failed (submission still saved):', err);
+    console.error('✉  Lead email step threw (submission still saved):', err?.stack || err);
   }
 
   return res.status(200).json({

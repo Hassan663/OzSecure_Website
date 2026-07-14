@@ -3,6 +3,7 @@ import { Check } from 'lucide-react';
 import PageHero from '@/components/PageHero';
 import Reveal from '@/components/Reveal';
 import AnimateIn from '@/components/AnimateIn';
+import Parallax from '@/components/Parallax';
 import Icon from '@/components/Icon';
 import CTA from '@/components/CTA';
 import { getSiteSettings } from '@/lib/siteSettings';
@@ -29,7 +30,9 @@ const compliance = (mln) => [
 function InfoPanel({ title, body, image, alt }) {
   return (
     <div className="relative flex min-h-[420px] items-end overflow-hidden rounded-[14px] border border-hairline bg-gradient-to-br from-navy to-navy-deep p-7 sm:p-11">
-      <Image src={image} alt={alt} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+      <Parallax>
+        <Image src={image} alt={alt} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+      </Parallax>
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/45 to-navy/10" />
       <div className="relative">
         <h3 className="max-w-[16ch] text-[clamp(1.5rem,2.6vw,2rem)] text-white">{title}</h3>
@@ -87,7 +90,7 @@ export default async function AboutPage() {
           </Reveal>
           <AnimateIn variant="depth" stagger={0.12} className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {values.map((v) => (
-              <div key={v.title} className="h-full rounded-[12px] border border-hairline border-t-2 border-t-accent bg-panel p-7">
+              <div key={v.title} className="h-full rounded-[12px] border border-hairline border-t-2 border-t-accent bg-panel p-7 transition-[transform,box-shadow] duration-200 will-change-transform hover:-translate-y-1 hover:shadow-soft">
                 <Icon name={v.icon} size={24} className="text-accent" strokeWidth={1.8} />
                 <h4 className="mb-2 mt-5 text-[1.25rem]">{v.title}</h4>
                 <p className="text-[0.97rem] leading-relaxed text-muted">{v.body}</p>

@@ -67,7 +67,10 @@ export default function Hero({ content = homepageDefaults }) {
     <div ref={sectionRef}>
       <HeroSlider>
         <div className="shell flex min-h-[88vh] items-center py-[clamp(96px,15vh,160px)] sm:min-h-[85vh]">
-          <div className="max-w-[720px] text-center sm:text-left [text-shadow:0_1px_16px_rgba(2,6,20,0.5)]">
+          {/* Strictly left-aligned, constrained to the left ~55% so it never overlaps
+              the subject on the right of the photos. Vertically centred; left padding
+              comes from the .shell gutter. */}
+          <div className="max-w-[600px] text-left [text-shadow:0_1px_16px_rgba(2,6,20,0.5)] lg:max-w-[680px]">
             <span className="hero-kicker inline-flex items-center gap-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-white/85">
               <span className="h-[2px] w-5 shrink-0 bg-accent" />
               {content.heroEyebrow}
@@ -84,7 +87,7 @@ export default function Hero({ content = homepageDefaults }) {
               ))}
             </h1>
 
-            <p className="hero-sub mx-auto mt-6 max-w-[52ch] text-[1.1rem] leading-relaxed text-white/90 sm:mx-0">
+            <p className="hero-sub mt-6 max-w-[46ch] text-[1.1rem] leading-relaxed text-white/90">
               {content.heroSubtext}
             </p>
             <p className="hero-sub mt-5 text-[1.05rem] font-semibold text-red-glow">{site.tagline}</p>
@@ -101,7 +104,7 @@ export default function Hero({ content = homepageDefaults }) {
               </Link>
             </div>
 
-            <div className="hero-trust mx-auto mt-10 flex max-w-[640px] flex-wrap justify-center gap-x-6 gap-y-3 border-t border-white/15 pt-7 sm:mx-0 sm:justify-start">
+            <div className="hero-trust mt-10 flex max-w-[560px] flex-wrap justify-start gap-x-6 gap-y-3 border-t border-white/15 pt-7">
               {trust.map((t, i) => (
                 <div key={`${t.label}-${i}`} className="flex items-center gap-2.5 text-[0.9rem] font-medium text-white/90">
                   <Icon name={t.icon} size={17} className="shrink-0 text-red-glow" />

@@ -85,12 +85,13 @@ body {
     @apply text-muted;
   }
 
-  /* Buttons — one refined CTA style, tight rounded, soft */
+  /* Buttons — one refined CTA style, tight rounded, soft. Consistent subtle
+     lift on hover across every variant (primary/outline/ghost/custom). */
   .btn {
-    @apply inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-transparent px-6 py-3 text-[0.92rem] font-semibold tracking-[0.01em] transition-all duration-200;
+    @apply inline-flex cursor-pointer items-center gap-2 rounded-[10px] border border-transparent px-6 py-3 text-[0.92rem] font-semibold tracking-[0.01em] transition-all duration-200 hover:-translate-y-0.5;
   }
   .btn-primary {
-    @apply bg-accent text-white shadow-soft hover:-translate-y-0.5 hover:bg-accent-strong;
+    @apply bg-accent text-white shadow-soft hover:bg-accent-strong;
   }
   .btn-ghost {
     @apply border-hairline bg-transparent text-ink hover:border-ink/25 hover:bg-ink/[0.03];
@@ -225,6 +226,21 @@ body {
     animation: none;
   }
   .chat-ring { display: none; }
+}
+
+/* Accessibility baseline: when the user prefers reduced motion, make every CSS
+   transition/animation effectively instant (hover lifts, theme fade, etc.).
+   GSAP scroll reveals + the Parallax component already self-disable via
+   gsap.matchMedia, so together the site presents with no perceptible motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Lenis smooth-scroll (recommended baseline) */

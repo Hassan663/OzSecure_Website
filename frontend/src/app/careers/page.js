@@ -59,7 +59,7 @@ export default async function CareersPage() {
           </Reveal>
           <AnimateIn variant="depth" stagger={0.12} className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {reasons.map((r) => (
-              <div key={r.title} className="h-full rounded-[12px] border border-hairline border-t-2 border-t-accent bg-panel p-7">
+              <div key={r.title} className="h-full rounded-[12px] border border-hairline border-t-2 border-t-accent bg-panel p-7 transition-[transform,box-shadow] duration-200 will-change-transform hover:-translate-y-1 hover:shadow-soft">
                 <Icon name={r.icon} size={24} className="text-accent" strokeWidth={1.8} />
                 <h4 className="mb-2 mt-5 text-[1.25rem]">{r.title}</h4>
                 <p className="text-[0.97rem] leading-relaxed text-muted">{r.body}</p>

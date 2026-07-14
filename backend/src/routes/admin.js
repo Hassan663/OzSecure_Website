@@ -7,6 +7,7 @@ import { requireAuth, JWT_SECRET } from '../middleware/auth.js';
 import * as store from '../store/index.js';
 import { mergeSiteSettings } from '../data/siteDefaults.js';
 import { normalizeHomepage, mergeHomepage } from '../data/homepageDefaults.js';
+import { getEmailConfig, sendTestEmail } from '../utils/mailer.js';
 
 const router = Router();
 
@@ -35,6 +36,18 @@ router.post('/login', loginLimiter, (req, res) => {
 
 // --- everything below requires a valid Bearer token ---
 router.use(requireAuth);
+
+// --- email diagnostics (admin-only; never returns the API key itself) ---
+// GET  /api/admin/email-health → resolved Resend config (masked key)
+// POST /api/admin/email-test   → sends one real email, returns the FULL Resend error
+router.get('/email-health', (_req, res) => {
+  res.json({ ok: true, config: getEmailConfig() });
+});
+
+router.post('/email-test', async (req, res) => {
+  const result = await sendTestEmail(req.body?.to);
+  res.status(result.ok ? 200 : 502).json(result);
+});
 
 router.get('/stats', async (_req, res) => {
   res.json({ ok: true, stats: await store.getStats() });

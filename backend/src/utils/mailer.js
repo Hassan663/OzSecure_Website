@@ -8,19 +8,34 @@ import { Resend } from 'resend';
  * The API key comes ONLY from RESEND_API_KEY (never hardcoded). If it's missing,
  * email is disabled — we log a warning and skip sending, so the lead still saves
  * and local/dev without a key keeps working. Email failures NEVER break the form
- * (the caller wraps these in try/catch and always returns success once saved).
+ * (the caller wraps these in try/catch and always returns success once saved) —
+ * but every failure is now logged LOUDLY with the full Resend error object, so
+ * the cause is visible in the Render logs.
  *
- * ⚠  DOMAIN VERIFICATION (important before go-live):
- *   Resend only lets you send FROM a verified domain/sender. Until
- *   ozsecuresecurity.com.au is verified in Resend, MAIL_FROM MUST be
- *   "onboarding@resend.dev" — and that onboarding sender can ONLY deliver to the
- *   email address of your own Resend account. Verify the domain in Resend, then
- *   set MAIL_FROM to a @ozsecuresecurity.com.au address to email real submitters.
+ * ⚠  MAIL_FROM / MAIL_TO QUOTING
+ *   In a .env file you write MAIL_FROM="OzSecure Services <noreply@ozsecure.co>"
+ *   and dotenv strips the quotes. In the RENDER DASHBOARD you must paste the RAW
+ *   value with NO surrounding quotes, otherwise Resend receives a `from` that
+ *   literally contains " characters and rejects it with 422 validation_error.
+ *   We defensively strip surrounding quotes here and warn if we had to.
+ *
+ * ⚠  DOMAIN VERIFICATION
+ *   Resend only sends FROM a verified domain/sender. ozsecure.co is verified, so
+ *   MAIL_FROM should be an @ozsecure.co address. If you ever fall back to
+ *   onboarding@resend.dev, that sender can ONLY deliver to your own Resend
+ *   account email.
  */
 
-const API_KEY = process.env.RESEND_API_KEY;
-const MAIL_FROM = process.env.MAIL_FROM || 'OzSecure Services <onboarding@resend.dev>';
-const MAIL_TO = process.env.MAIL_TO || 'info@ozsecuresecurity.com.au';
+/** Trim + strip one layer of accidental surrounding quotes (a Render-dashboard classic). */
+const cleanEnv = (v) => (v ?? '').toString().trim().replace(/^['"]/, '').replace(/['"]$/, '').trim();
+
+const RAW_KEY = process.env.RESEND_API_KEY;
+const RAW_FROM = process.env.MAIL_FROM;
+const RAW_TO = process.env.MAIL_TO;
+
+const API_KEY = cleanEnv(RAW_KEY);
+const MAIL_FROM = cleanEnv(RAW_FROM) || 'OzSecure Services <onboarding@resend.dev>';
+const MAIL_TO = cleanEnv(RAW_TO) || 'info@ozsecuresecurity.com.au';
 
 const PHONE = '0450 717 765';
 const TAGLINE = 'Trusted Protection. Powerful Presence.';
@@ -28,19 +43,67 @@ const NAVY = '#0D1B3D';
 const CRIMSON = '#D72626';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const maskKey = (k) => (k ? `${k.slice(0, 6)}…(${k.length} chars)` : '(none)');
+
 let resend = null;
 if (API_KEY) {
   resend = new Resend(API_KEY);
-  if (/@resend\.dev/i.test(MAIL_FROM)) {
-    console.log(
-      'ℹ  Resend: MAIL_FROM uses onboarding@resend.dev — this ONLY delivers to your own Resend account email. ' +
-        'Verify ozsecuresecurity.com.au in Resend and set MAIL_FROM to a @ozsecuresecurity.com.au address to email submitters.'
-    );
-  } else {
-    console.log(`ℹ  Resend enabled — sending from ${MAIL_FROM}, team notifications to ${MAIL_TO}.`);
+
+  console.log('──────── RESEND EMAIL CONFIG (at boot) ────────');
+  console.log(`   RESEND_API_KEY : ${maskKey(API_KEY)}`);
+  console.log(`   MAIL_FROM      : "${MAIL_FROM}"`);
+  console.log(`   MAIL_TO        : "${MAIL_TO}"`);
+  if (RAW_FROM && cleanEnv(RAW_FROM) !== RAW_FROM.trim()) {
+    console.warn('   ⚠  MAIL_FROM had surrounding quotes — stripped. Remove the quotes in the Render dashboard.');
   }
+  if (RAW_TO && cleanEnv(RAW_TO) !== RAW_TO.trim()) {
+    console.warn('   ⚠  MAIL_TO had surrounding quotes — stripped. Remove the quotes in the Render dashboard.');
+  }
+  if (!MAIL_FROM.includes('@')) {
+    console.error('   ✗  MAIL_FROM has no "@" — Resend will reject this. Expected: Name <user@your-verified-domain>');
+  }
+  if (/@resend\.dev/i.test(MAIL_FROM)) {
+    console.warn('   ⚠  MAIL_FROM uses onboarding@resend.dev — it can ONLY deliver to your own Resend account email.');
+  }
+  console.log('───────────────────────────────────────────────');
 } else {
   console.warn('⚠  RESEND_API_KEY not set — lead emails are DISABLED (leads still save to the store).');
+}
+
+/** Log everything Resend told us about a failure (name + statusCode + full body). */
+function logResendError(context, error) {
+  console.error(`✉  ${context} — FAILED`);
+  console.error(`     name       : ${error?.name ?? '(none)'}`);
+  console.error(`     statusCode : ${error?.statusCode ?? '(none)'}`);
+  console.error(`     message    : ${error?.message ?? '(none)'}`);
+  try {
+    console.error(`     full error : ${JSON.stringify(error, Object.getOwnPropertyNames(error || {}))}`);
+  } catch {
+    console.error('     full error :', error);
+  }
+  if (error?.stack) console.error(`     stack      : ${error.stack}`);
+}
+
+/** The single place that actually calls Resend, with attempt/success/failure logging. */
+async function send(context, payload) {
+  console.log(`✉  ${context} — attempting send | from="${payload.from}" to="${payload.to}" subject="${payload.subject}"`);
+  let data;
+  let error;
+  try {
+    ({ data, error } = await resend.emails.send(payload));
+  } catch (thrown) {
+    // Network/auth failures surface as thrown exceptions rather than { error }.
+    logResendError(`${context} (threw)`, thrown);
+    throw thrown;
+  }
+  if (error) {
+    logResendError(context, error);
+    const e = new Error(`${error.name || 'resend_error'}${error.statusCode ? ` [${error.statusCode}]` : ''}: ${error.message}`);
+    e.resendError = error;
+    throw e;
+  }
+  console.log(`✉  ${context} — SENT ✓ (resend id: ${data?.id})`);
+  return { sent: true, id: data?.id };
 }
 
 function escapeHtml(str = '') {
@@ -94,22 +157,23 @@ export async function sendTeamNotification(lead = {}) {
     </div>`;
 
   const replyTo = EMAIL_RE.test((lead.email || '').trim()) ? lead.email.trim() : undefined;
-  const { data, error } = await resend.emails.send({
+  return send('Team notification', {
     from: MAIL_FROM,
     to: MAIL_TO,
     replyTo,
     subject: `New enquiry — ${lead.service || 'General'} (${source})`,
     html,
   });
-  if (error) throw new Error(error.message || 'Resend error (team notification)');
-  return { sent: true, id: data?.id };
 }
 
 /** Friendly auto-reply to the submitter (only if a valid email was provided). */
 export async function sendAutoReply(lead = {}) {
   if (!resend) return { sent: false, skipped: true };
   const email = (lead.email || '').trim();
-  if (!EMAIL_RE.test(email)) return { sent: false, skipped: true, reason: 'no-valid-email' };
+  if (!EMAIL_RE.test(email)) {
+    console.log(`✉  Auto-reply — skipped (no valid submitter email; got "${email}")`);
+    return { sent: false, skipped: true, reason: 'no-valid-email' };
+  }
 
   const firstName = (lead.name || '').trim().split(/\s+/)[0];
   const greeting = firstName ? `Hi ${escapeHtml(firstName)},` : 'Hi there,';
@@ -133,14 +197,12 @@ export async function sendAutoReply(lead = {}) {
       </p>
     </div>`;
 
-  const { data, error } = await resend.emails.send({
+  return send('Auto-reply', {
     from: MAIL_FROM,
     to: email,
     subject: 'Thanks for contacting OzSecure Services',
     html,
   });
-  if (error) throw new Error(error.message || 'Resend error (auto-reply)');
-  return { sent: true, id: data?.id };
 }
 
 /**
@@ -157,13 +219,55 @@ export async function sendLeadEmails(lead = {}) {
     const r = await sendTeamNotification(lead);
     result.notified = !!r.sent;
   } catch (err) {
-    console.error('Team notification email failed (lead still saved):', err.message);
+    console.error('✉  Team notification email failed (lead still saved). Full error follows:');
+    logResendError('Team notification (outer)', err.resendError || err);
   }
   try {
     const r = await sendAutoReply(lead);
     result.autoReplied = !!r.sent;
   } catch (err) {
-    console.error('Auto-reply email failed (lead still saved):', err.message);
+    console.error('✉  Auto-reply email failed (lead still saved). Full error follows:');
+    logResendError('Auto-reply (outer)', err.resendError || err);
   }
   return result;
+}
+
+/** Non-secret snapshot of the email config — powers the admin diagnostic endpoint. */
+export function getEmailConfig() {
+  return {
+    resendEnabled: !!resend,
+    apiKeyPresent: !!API_KEY,
+    apiKeyPrefix: API_KEY ? API_KEY.slice(0, 6) : null,
+    apiKeyLength: API_KEY ? API_KEY.length : 0,
+    mailFrom: MAIL_FROM,
+    mailTo: MAIL_TO,
+    mailFromHadQuotes: !!RAW_FROM && cleanEnv(RAW_FROM) !== RAW_FROM.trim(),
+    mailToHadQuotes: !!RAW_TO && cleanEnv(RAW_TO) !== RAW_TO.trim(),
+    mailFromHasAt: MAIL_FROM.includes('@'),
+    usingResendOnboardingSender: /@resend\.dev/i.test(MAIL_FROM),
+  };
+}
+
+/** Fire a single test email and return the FULL Resend result/error (admin-only). */
+export async function sendTestEmail(to) {
+  if (!resend) return { ok: false, error: { message: 'RESEND_API_KEY not set — email is disabled' } };
+  const dest = cleanEnv(to) || MAIL_TO;
+  try {
+    const r = await send('Test email', {
+      from: MAIL_FROM,
+      to: dest,
+      subject: 'OzSecure — Resend test email',
+      html: `<p>This is a test from the OzSecure API. If you received it, Resend sending works.</p>
+             <p style="color:#8A97AD;font-size:12px">from: ${escapeHtml(MAIL_FROM)} → to: ${escapeHtml(dest)}</p>`,
+    });
+    return { ok: true, id: r.id, from: MAIL_FROM, to: dest };
+  } catch (err) {
+    const e = err.resendError || err;
+    return {
+      ok: false,
+      from: MAIL_FROM,
+      to: dest,
+      error: { name: e?.name, statusCode: e?.statusCode, message: e?.message },
+    };
+  }
 }

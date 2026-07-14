@@ -20,6 +20,18 @@ export default function StatCounter({ value, suffix = '', label }) {
 
       const mm = gsap.matchMedia();
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        // Accent tick draws in from the left…
+        const tick = el.querySelector('.stat-tick');
+        if (tick) {
+          gsap.from(tick, {
+            scaleX: 0,
+            transformOrigin: 'left center',
+            duration: 0.6,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 85%' },
+          });
+        }
+        // …and the numeral counts up.
         const counter = { v: 0 };
         gsap.to(counter, {
           v: value,
@@ -36,7 +48,7 @@ export default function StatCounter({ value, suffix = '', label }) {
 
   return (
     <div ref={ref}>
-      <span className="block h-[2px] w-8 bg-accent" />
+      <span className="stat-tick block h-[2px] w-8 bg-accent" />
       <div className="mt-4 font-display text-[clamp(2.8rem,5.5vw,4rem)] font-bold leading-none tracking-tight text-heading">
         {display}
         <span className="text-accent">{suffix}</span>

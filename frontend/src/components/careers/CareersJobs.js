@@ -115,7 +115,7 @@ function ApplyModal({ job, onClose }) {
 
 function JobCard({ job, expanded, onToggle, onApply }) {
   return (
-    <div className="rounded-[12px] border border-hairline bg-panel p-6 transition-colors">
+    <div className="rounded-[12px] border border-hairline bg-panel p-6 transition-[transform,box-shadow,border-color] duration-200 will-change-transform hover:-translate-y-1 hover:border-accent/30 hover:shadow-soft">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
