@@ -47,7 +47,7 @@ function ApplyModal({ job, onClose }) {
       setStatus('success');
     } catch (err) {
       setStatus('error');
-      setError(err.message || 'We could not send your application. Please call 0450 717 765.');
+      setError(err.message || 'We could not send your application. Please call 1300 101 765.');
     }
   };
 

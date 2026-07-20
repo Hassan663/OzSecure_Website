@@ -40,7 +40,7 @@ router.post('/', validators, async (req, res) => {
     console.error('Quote save failed:', err);
     return res
       .status(500)
-      .json({ ok: false, message: 'We could not record your request right now. Please call 0450 717 765.' });
+      .json({ ok: false, message: 'We could not record your request right now. Please call 1300 101 765.' });
   }
 
   // 2) Then send the team notification + submitter auto-reply via Resend.

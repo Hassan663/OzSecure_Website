@@ -10,14 +10,10 @@ import CTA from '@/components/CTA';
 import { getServices, getServiceBySlug } from '@/lib/services';
 import { resolveImageSrc } from '@/lib/media';
 
-// Prerender the known slugs at build; allow slugs added later to resolve at
-// runtime (ISR) instead of 404-ing.
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  const services = await getServices();
-  return services.map((s) => ({ slug: s.slug }));
-}
+// Rendered per request so admin service edits — and newly added services —
+// appear immediately without a redeploy. Any slug resolves at request time;
+// unknown/inactive slugs 404 via notFound() below.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }) {
   const service = await getServiceBySlug(params.slug);

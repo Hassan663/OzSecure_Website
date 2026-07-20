@@ -39,7 +39,7 @@ const quoteLimiter = rateLimit({
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { ok: false, message: 'Too many requests. Please try again shortly or call 0450 717 765.' },
+  message: { ok: false, message: 'Too many requests. Please try again shortly or call 1300 101 765.' },
 });
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'ozsecure-api' }));

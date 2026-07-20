@@ -30,7 +30,7 @@ export default function QuoteForm() {
       setForm(initial);
     } catch (err) {
       setStatus('error');
-      setError(err.message || 'We could not send your request. Please call 0450 717 765.');
+      setError(err.message || 'We could not send your request. Please call 1300 101 765.');
     }
   };
 

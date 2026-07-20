@@ -2,7 +2,7 @@ import { cache } from 'react';
 import { services as defaultServices } from '@/data/services';
 
 // Server-side reads of the dynamic services collection for App Router.
-// Cached per-request + short ISR revalidate; always falls back to the bundled
+// Cached per-request (React cache) but NEVER cross-request cached (no-store), so
 // data/services.js so the site never renders blank (even during `next build`
 // with the backend down). The bundled defaults use `id` as the slug, so we
 // normalise them to the dynamic shape (slug/order/active) for a uniform API.
@@ -15,7 +15,7 @@ const fallbackList = () => defaultServices.map(normalizeDefault);
 
 export const getServices = cache(async () => {
   try {
-    const res = await fetch(`${API}/api/content/services`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API}/api/content/services`, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     if (!res.ok) throw new Error('bad status');
     const data = await res.json();
     const list = Array.isArray(data.services) ? data.services : [];
@@ -29,7 +29,7 @@ export const getServices = cache(async () => {
 // (→ notFound()), but on a network error falls back to bundled defaults.
 export const getServiceBySlug = cache(async (slug) => {
   try {
-    const res = await fetch(`${API}/api/content/services/${encodeURIComponent(slug)}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API}/api/content/services/${encodeURIComponent(slug)}`, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     if (res.status === 404) return null;
     if (!res.ok) throw new Error('bad status');
     const data = await res.json();

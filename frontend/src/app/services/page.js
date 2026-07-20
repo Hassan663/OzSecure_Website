@@ -3,6 +3,9 @@ import ServiceDetail from '@/components/ServiceDetail';
 import CTA from '@/components/CTA';
 import { getServices } from '@/lib/services';
 
+// Render per request so admin service edits appear without a redeploy.
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Services',
   description:

@@ -7,6 +7,9 @@ import CareersJobs from '@/components/careers/CareersJobs';
 import { getSiteSettings } from '@/lib/siteSettings';
 import { getJobs } from '@/lib/jobs';
 
+// Render per request so admin job/settings edits appear without a redeploy.
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Careers',
   description:

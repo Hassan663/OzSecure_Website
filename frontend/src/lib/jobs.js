@@ -7,7 +7,7 @@ const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 export const getJobs = cache(async () => {
   try {
-    const res = await fetch(`${API}/api/content/jobs`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API}/api/content/jobs`, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     if (!res.ok) throw new Error('bad status');
     const data = await res.json();
     return Array.isArray(data.jobs) ? data.jobs : [];

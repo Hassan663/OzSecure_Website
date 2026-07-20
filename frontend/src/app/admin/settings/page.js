@@ -23,7 +23,7 @@ const GROUPS = [
     fields: [
       { key: 'email', label: 'Email', required: true, type: 'email' },
       { key: 'phonePrimary', label: 'Phone (display)', required: true },
-      { key: 'phonePrimaryTel', label: 'Phone (dial / tel:)', required: true, hint: 'e.g. +61450717765' },
+      { key: 'phonePrimaryTel', label: 'Phone (dial / tel:)', required: true, hint: 'e.g. 1300101765' },
       { key: 'coverage', label: 'Coverage area' },
       { key: 'hours', label: 'Operating hours' },
     ],

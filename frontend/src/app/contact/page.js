@@ -5,6 +5,9 @@ import QuoteForm from '@/components/QuoteForm';
 import Constellation from '@/components/Constellation';
 import { getSiteSettings } from '@/lib/siteSettings';
 
+// Render per request so admin site-settings edits appear without a redeploy.
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Contact',
   description:

@@ -5,9 +5,9 @@ export const site = {
   entity: 'A project of KN Management Services Pty Ltd',
   mln: '000109419',
   abn: '64 665 739 971',
-  yearsExperience: '15+',
-  phonePrimary: '0450 717 765',
-  phonePrimaryTel: '+61450717765',
+  yearsExperience: '10+',
+  phonePrimary: '1300 101 765',
+  phonePrimaryTel: '1300101765',
   email: 'info@ozsecuresecurity.com.au',
   address: {
     line1: '3/39 Marion Street',

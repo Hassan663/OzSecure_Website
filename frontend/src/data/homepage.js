@@ -12,14 +12,14 @@ export const homepageDefaults = {
     { icon: 'ShieldCheck', label: 'Fully Licensed' },
     { icon: 'Umbrella', label: 'Fully Insured' },
     { icon: 'Clock', label: '24/7 Operations' },
-    { icon: 'BadgeCheck', label: '15+ Years Experience' },
+    { icon: 'BadgeCheck', label: '10+ Years Experience' },
     { icon: 'Users', label: 'Vetted & White-Carded' },
   ],
   stats: [
-    { value: 15, suffix: '+', label: 'Years in business' },
+    { value: 10, suffix: '+', label: 'Years in business' },
     { value: 24, suffix: '/7', label: 'Operations centre' },
-    { value: 350, suffix: '+', label: 'Sites serviced' },
-    { value: 15, suffix: 'min', label: 'Avg. callout response' },
+    { value: 100, suffix: '+', label: 'Sites serviced' },
+    { value: 30, suffix: 'min', label: 'Avg. callout response' },
   ],
   whyHeading: 'Accountable from the first call to the final report.',
   whyIntro:

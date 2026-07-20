@@ -37,7 +37,7 @@ const API_KEY = cleanEnv(RAW_KEY);
 const MAIL_FROM = cleanEnv(RAW_FROM) || 'OzSecure Services <onboarding@resend.dev>';
 const MAIL_TO = cleanEnv(RAW_TO) || 'info@ozsecuresecurity.com.au';
 
-const PHONE = '0450 717 765';
+const PHONE = '1300 101 765';
 const TAGLINE = 'Trusted Protection. Powerful Presence.';
 const NAVY = '#0D1B3D';
 const CRIMSON = '#D72626';
@@ -187,7 +187,7 @@ export async function sendAutoReply(lead = {}) {
         <p style="margin:0 0 14px">${greeting}</p>
         <p style="margin:0 0 14px">Thanks for getting in touch with <strong>OzSecure Services</strong>. We've received your enquiry and a member of our team will be in touch shortly.</p>
         <p style="margin:0 0 14px">If it's urgent, our operations desk is available 24/7 — call us any time on
-          <a href="tel:+61450717765" style="color:${CRIMSON};font-weight:700;text-decoration:none">${PHONE}</a>.</p>
+          <a href="tel:1300101765" style="color:${CRIMSON};font-weight:700;text-decoration:none">${PHONE}</a>.</p>
         <p style="margin:22px 0 2px">Kind regards,</p>
         <p style="margin:0;font-weight:700;color:${NAVY}">OzSecure Services</p>
         <p style="margin:2px 0 0;font-size:13px;color:${CRIMSON};font-weight:600">${TAGLINE}</p>

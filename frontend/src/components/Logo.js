@@ -14,7 +14,8 @@ import Image from 'next/image';
  * announced (the hidden one is display:none, ignored by assistive tech).
  */
 export default function Logo({ className = 'h-12 w-auto sm:h-16', priority = false, reverse = false }) {
-  const common = { alt: 'OzSecure Services', priority, sizes: '220px' };
+  // sizes covers the largest render (~87px wide at h-20) on 3x displays.
+  const common = { alt: 'OzSecure Services', priority, sizes: '280px' };
   // `reverse` forces the white knockout logo regardless of theme — for use on a
   // dark surface (e.g. the navy admin sidebar) in both light and dark mode.
   if (reverse) {

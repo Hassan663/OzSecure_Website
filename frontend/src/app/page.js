@@ -12,6 +12,10 @@ import { getServices } from '@/lib/services';
 import { getTestimonials } from '@/lib/testimonials';
 import { getHomepage } from '@/lib/homepage';
 
+// Render per request so admin edits (homepage content, services, testimonials)
+// appear immediately — never baked into static HTML at build time.
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const [services, testimonials, home] = await Promise.all([getServices(), getTestimonials(), getHomepage()]);
   return (

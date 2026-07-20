@@ -133,10 +133,10 @@ export const services = [
 ];
 
 export const stats = [
-  { value: 15, suffix: '+', label: 'Years in business' },
+  { value: 10, suffix: '+', label: 'Years in business' },
   { value: 24, suffix: '/7', label: 'Operations centre' },
-  { value: 350, suffix: '+', label: 'Sites serviced' },
-  { value: 15, suffix: 'min', label: 'Avg. callout response' },
+  { value: 100, suffix: '+', label: 'Sites serviced' },
+  { value: 30, suffix: 'min', label: 'Avg. callout response' },
 ];
 
 export const whyUs = [

@@ -8,6 +8,9 @@ import Icon from '@/components/Icon';
 import CTA from '@/components/CTA';
 import { getSiteSettings } from '@/lib/siteSettings';
 
+// Render per request so admin site-settings edits appear without a redeploy.
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'About',
   description:

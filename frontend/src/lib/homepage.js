@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import { homepageDefaults } from '@/data/homepage';
 
-// Server-side read of the editable homepage content. Cached + revalidated;
+// Server-side read of the editable homepage content. Never cached (no-store) so
 // falls back to the bundled defaults on any error (never blank).
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
@@ -16,7 +16,7 @@ function merge(stored) {
 
 export const getHomepage = cache(async () => {
   try {
-    const res = await fetch(`${API}/api/content/homepage`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API}/api/content/homepage`, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     if (!res.ok) throw new Error('bad status');
     const data = await res.json();
     return merge(data.homepage);
