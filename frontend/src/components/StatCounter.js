@@ -49,7 +49,7 @@ export default function StatCounter({ value, suffix = '', label }) {
   return (
     <div ref={ref}>
       <span className="stat-tick block h-[2px] w-8 bg-accent" />
-      <div className="mt-4 font-display text-[clamp(2.8rem,5.5vw,4rem)] font-bold leading-none tracking-tight text-heading">
+      <div className="mt-4 font-display text-[clamp(2.1rem,9vw,2.6rem)] font-bold leading-none tracking-tight text-heading sm:text-[clamp(2.8rem,5.5vw,4rem)]">
         {display}
         <span className="text-accent">{suffix}</span>
       </div>

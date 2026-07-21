@@ -35,7 +35,7 @@ const RAW_TO = process.env.MAIL_TO;
 
 const API_KEY = cleanEnv(RAW_KEY);
 const MAIL_FROM = cleanEnv(RAW_FROM) || 'OzSecure Services <onboarding@resend.dev>';
-const MAIL_TO = cleanEnv(RAW_TO) || 'info@ozsecuresecurity.com.au';
+const MAIL_TO = cleanEnv(RAW_TO) || 'info@ozsecure.co';
 
 const PHONE = '1300 101 765';
 const TAGLINE = 'Trusted Protection. Powerful Presence.';

@@ -43,7 +43,7 @@ export default async function Home() {
 
       {/* STATS */}
       <section className="section border-y border-hairline bg-surface">
-        <div className="shell grid grid-cols-2 gap-x-8 gap-y-12 lg:grid-cols-4">
+        <div className="shell grid grid-cols-2 gap-x-5 gap-y-10 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-4">
           {home.stats.map((s) => (
             <StatCounter key={s.label} value={s.value} suffix={s.suffix} label={s.label} />
           ))}

@@ -15,7 +15,7 @@ export const siteSettingsDefaults = {
   yearsExperience: '10+',
   phonePrimary: '1300 101 765',
   phonePrimaryTel: '1300101765',
-  email: 'info@ozsecuresecurity.com.au',
+  email: 'info@ozsecure.co',
   address: { line1: '3/39 Marion Street', line2: 'Parramatta, NSW 2144' },
   coverage: 'Sydney & Greater NSW',
   hours: '24/7 Operations',

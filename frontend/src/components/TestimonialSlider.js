@@ -48,21 +48,24 @@ export default function TestimonialSlider({ items }) {
       </div>
 
       {list.length > 1 && (
-        <div className="mt-8 flex items-center justify-center gap-4">
-          <button onClick={() => go(i - 1)} aria-label="Previous testimonial" className="flex h-10 w-10 items-center justify-center rounded-full border border-hairline text-muted transition-colors hover:border-accent hover:text-accent">
+        <div className="mt-8 flex items-center justify-center gap-3">
+          <button onClick={() => go(i - 1)} aria-label="Previous testimonial" className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline text-muted transition-colors hover:border-accent hover:text-accent">
             <ChevronLeft size={18} />
           </button>
-          <div className="flex gap-2">
+          <div className="flex items-center">
             {list.map((_, d) => (
               <button
                 key={d}
                 onClick={() => setI(d)}
                 aria-label={`Go to testimonial ${d + 1}`}
-                className={`h-2 rounded-full transition-all ${d === i ? 'w-6 bg-accent' : 'w-2 bg-muted/30 hover:bg-muted/50'}`}
-              />
+                aria-current={d === i}
+                className="flex h-11 items-center px-1.5"
+              >
+                <span className={`block h-2 rounded-full transition-all ${d === i ? 'w-6 bg-accent' : 'w-2 bg-muted/30 hover:bg-muted/50'}`} />
+              </button>
             ))}
           </div>
-          <button onClick={() => go(i + 1)} aria-label="Next testimonial" className="flex h-10 w-10 items-center justify-center rounded-full border border-hairline text-muted transition-colors hover:border-accent hover:text-accent">
+          <button onClick={() => go(i + 1)} aria-label="Next testimonial" className="flex h-11 w-11 items-center justify-center rounded-full border border-hairline text-muted transition-colors hover:border-accent hover:text-accent">
             <ChevronRight size={18} />
           </button>
         </div>
