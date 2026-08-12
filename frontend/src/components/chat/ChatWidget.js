@@ -300,7 +300,7 @@ export default function ChatWidget() {
           {/* Header */}
           <div className="flex items-center justify-between gap-3 border-b border-hairline px-4 py-3">
             <div className="flex items-center gap-2.5">
-              <Logo className="h-7 w-auto" />
+              <Logo className="h-9 w-auto" />
               <div>
                 <div className="text-[0.95rem] font-semibold text-ink">OzSecure Assistant</div>
                 <div className="flex items-center gap-1.5 text-[0.72rem] text-muted">

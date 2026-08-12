@@ -16,9 +16,9 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-hairline bg-bg/85 backdrop-blur-md">
-      <nav className="shell flex h-[76px] items-center justify-between gap-4 sm:h-[100px] sm:gap-6">
+      <nav className="shell flex h-[96px] items-center justify-between gap-4 sm:h-[140px] sm:gap-6">
         <Link href="/" className="flex items-center" aria-label="OzSecure Services home">
-          <Logo className="h-14 w-auto sm:h-20" priority />
+          <Logo className="h-[72px] w-auto sm:h-28" priority />
         </Link>
 
         <div className="hidden items-center gap-9 md:flex">

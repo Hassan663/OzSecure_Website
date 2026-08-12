@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-bg text-ink">
       <div className="flex items-center justify-between border-b border-hairline px-6 py-4">
-        <Logo className="h-9 w-auto" />
+        <Logo className="h-12 w-auto" />
         <ThemeToggle />
       </div>
 

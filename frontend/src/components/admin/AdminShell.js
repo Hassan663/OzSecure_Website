@@ -25,7 +25,7 @@ function SidebarContent({ pathname, onNav, onLogout }) {
     <div className="flex h-full flex-col bg-navy text-white">
       <div className="flex h-16 items-center border-b border-white/10 px-5">
         <Link href="/admin" onClick={onNav} aria-label="OzSecure admin home">
-          <Logo reverse className="h-8 w-auto" />
+          <Logo reverse className="h-10 w-auto" />
         </Link>
       </div>
 
